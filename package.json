@@ -1,0 +1,14 @@
+{
+  "name": "geometry",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A 21-day guided path through first-semester geometry, with drawn figures and unlimited practice.",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "start": "SUBJECTS=geometry node server/index.js",
+    "dev": "SUBJECTS=geometry node --watch server/index.js"
+  }
+}

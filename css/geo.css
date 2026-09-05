@@ -1,0 +1,211 @@
+:root{
+    --bg:#E9EDF1; --sheet:#FCFDFE; --panel:#F2F5F8; --sunk:#EAEFF4;
+    --ink:#121A22; --ink-2:#36434F; --muted:#5F6E7C; --line:#CDD7E0; --line-2:#B4C1CD;
+    --grid:rgba(18,26,34,.055);
+    --draw:#0E6E78; --draw-soft:#DDEFF1;
+    --given:#A8620A; --given-soft:#F7ECDC;
+    --ok:#1F7A4D; --ok-soft:#E0F1E7; --no:#B23B2F; --no-soft:#FAE8E5;
+    --on-draw:#FFFFFF;
+    --shadow:0 1px 1px rgba(18,26,34,.06), 0 14px 30px -20px rgba(18,26,34,.45);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0C1116; --sheet:#151C23; --panel:#1B242C; --sunk:#111820;
+      --ink:#E7EDF3; --ink-2:#C0CCD7; --muted:#8B9AA7; --line:#28333D; --line-2:#37454F;
+      --grid:rgba(231,237,243,.05);
+      --draw:#4FC7D3; --draw-soft:#123034;
+      --given:#E5A34B; --given-soft:#31261A;
+      --ok:#54C489; --ok-soft:#152B21; --no:#EE7A6D; --no-soft:#2E1D1B;
+      --on-draw:#08191C;
+      --shadow:0 1px 1px rgba(0,0,0,.5), 0 16px 34px -22px rgba(0,0,0,.9);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0C1116; --sheet:#151C23; --panel:#1B242C; --sunk:#111820;
+    --ink:#E7EDF3; --ink-2:#C0CCD7; --muted:#8B9AA7; --line:#28333D; --line-2:#37454F;
+    --grid:rgba(231,237,243,.05);
+    --draw:#4FC7D3; --draw-soft:#123034;
+    --given:#E5A34B; --given-soft:#31261A;
+    --ok:#54C489; --ok-soft:#152B21; --no:#EE7A6D; --no-soft:#2E1D1B;
+    --on-draw:#08191C;
+    --shadow:0 1px 1px rgba(0,0,0,.5), 0 16px 34px -22px rgba(0,0,0,.9);
+  }
+  
+  *{box-sizing:border-box}
+  body{
+    margin:0; color:var(--ink);
+    background-color:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:24px 24px;
+    font-family:"Newsreader", Georgia, serif; font-size:17.5px; line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.disp,.btn,.chip{font-family:"Archivo","Helvetica Neue",Arial,sans-serif; margin:0; text-wrap:balance}
+  .mono,code,input,select,.num{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace}
+  .wrap{max-width:1140px; margin:0 auto; padding:0 22px}
+  .label{font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted)}
+  
+  /* ---- header ---- */
+  header.top{padding:46px 0 0}
+  h1{font-size:clamp(36px,6.6vw,72px); font-weight:700; letter-spacing:-.035em; line-height:.94; text-transform:uppercase}
+  h1 em{font-style:normal; color:var(--draw)}
+  .lede{max-width:60ch; color:var(--ink-2); font-size:19px; margin:16px 0 0}
+  .ruler{margin:26px 0 4px; height:15px; border-top:1.5px solid var(--ink-2);
+    background-image:repeating-linear-gradient(90deg, var(--ink-2) 0 1px, transparent 1px 16px), repeating-linear-gradient(90deg, var(--ink-2) 0 1px, transparent 1px 80px);
+    background-size:16px 6px, 80px 12px; background-repeat:repeat-x, repeat-x; background-position:0 0, 0 0; opacity:.5}
+  .progress{display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin:18px 0 0}
+  .pbar{flex:1 1 200px; min-width:150px; height:7px; background:var(--sunk); border:1px solid var(--line); border-radius:99px; overflow:hidden}
+  .pbar span{display:block; height:100%; width:0; background:var(--draw); transition:width .4s ease}
+  .pnum{font-family:"JetBrains Mono",monospace; font-size:12.5px; color:var(--muted); font-variant-numeric:tabular-nums}
+  .linkbtn{background:none; border:none; color:var(--muted); font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; padding:4px 2px; border-bottom:1px solid transparent}
+  .linkbtn:hover{color:var(--draw); border-bottom-color:var(--draw)}
+  
+  /* ---- nav ---- */
+  nav.bar{position:sticky; top:0; z-index:20; margin-top:26px; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    background:color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter:blur(10px)}
+  .bar-inner{display:flex; gap:0; overflow-x:auto; max-width:1140px; margin:0 auto; padding:0 22px}
+  .chip{flex:0 0 auto; background:none; border:none; border-bottom:2.5px solid transparent; color:var(--muted);
+    font-weight:600; font-size:13px; letter-spacing:.02em; padding:13px 15px; cursor:pointer; text-decoration:none; white-space:nowrap}
+  .chip:hover{color:var(--ink)}
+  .chip.on{color:var(--draw); border-bottom-color:var(--draw)}
+  
+  /* ---- units ---- */
+  main{padding:6px 0 80px}
+  .unit{padding:52px 0 0; scroll-margin-top:70px}
+  .unit-head{display:flex; align-items:center; gap:12px; margin-bottom:8px}
+  .unit-head .label{color:var(--draw)}
+  .rule{flex:1; height:1px; background:var(--line)}
+  .unit h2{font-size:clamp(25px,3.3vw,34px); font-weight:700; letter-spacing:-.025em}
+  .unit-sub{color:var(--muted); font-size:16.5px; margin:6px 0 24px; max-width:62ch}
+  .grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.08fr); gap:22px; align-items:start}
+  @media (max-width:920px){ .grid{grid-template-columns:minmax(0,1fr)} }
+  
+  .sheet{background:var(--sheet); border:1px solid var(--line); box-shadow:var(--shadow); border-radius:3px; position:relative}
+  .sheet::before{content:""; position:absolute; inset:7px; border:1px solid var(--line); border-radius:2px; pointer-events:none; opacity:.55}
+  .pad{padding:24px 26px 26px; position:relative}
+  .notes h3{margin-bottom:14px}
+  .notes ul{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:12px}
+  .notes li{padding-left:22px; position:relative; font-size:16.8px}
+  .notes li::before{content:""; position:absolute; left:0; top:.66em; width:11px; height:1.5px; background:var(--draw)}
+  .notes b{font-weight:600}
+  .eq{display:block; background:var(--sunk); border:1px solid var(--line); border-radius:3px; padding:11px 13px; margin:14px 0 0;
+    font-family:"JetBrains Mono",monospace; font-size:14px; overflow-x:auto; white-space:nowrap; color:var(--ink)}
+  figure{margin:0 0 18px}
+  figure svg{display:block; width:100%; height:auto; max-width:380px; margin:0 auto}
+  figcaption{margin-top:8px; text-align:center; color:var(--muted); font-size:13.5px}
+  .svg-line{stroke:var(--ink-2); stroke-width:2; fill:none; stroke-linecap:round}
+  .svg-thin{stroke:var(--line-2); stroke-width:1.2; fill:none}
+  .svg-draw{stroke:var(--draw); stroke-width:2.4; fill:none; stroke-linecap:round}
+  .svg-fill{fill:var(--draw-soft); stroke:var(--draw); stroke-width:1.6}
+  .svg-txt{fill:var(--ink); font-family:"JetBrains Mono",monospace; font-size:13px}
+  .svg-mut{fill:var(--muted); font-family:"JetBrains Mono",monospace; font-size:12px}
+  .svg-hi{fill:var(--draw); font-family:"JetBrains Mono",monospace; font-size:13px; font-weight:700}
+  .svg-dot{fill:var(--ink)}
+  .hi-ring{fill:none; stroke:var(--draw); stroke-width:1.6}
+  
+  /* ---- drill ---- */
+  .drill-head{display:flex; justify-content:space-between; align-items:center; padding:13px 22px; background:var(--panel); border-bottom:1px solid var(--line); position:relative; z-index:1; margin:0}
+  .score{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
+  .qtext{font-size:18.5px; margin:0}
+  .qtext b{color:var(--draw); font-weight:600}
+  .ansrow{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:18px 0 0}
+  input.in, select.in{background:var(--sunk); border:1.5px solid var(--line-2); border-radius:3px; padding:10px 12px; font-size:15.5px; color:var(--ink); flex:1 1 180px; min-width:0}
+  input.in:focus, select.in:focus{outline:none; border-color:var(--draw); box-shadow:0 0 0 3px var(--draw-soft)}
+  .unitlabel{color:var(--muted); font-size:14.5px; font-family:"JetBrains Mono",monospace}
+  .choices{display:grid; gap:8px; margin:18px 0 0}
+  .choice{text-align:left; background:var(--sunk); border:1.5px solid var(--line); border-radius:3px; padding:11px 14px;
+    font-family:"Newsreader",serif; font-size:16.5px; color:var(--ink); cursor:pointer; transition:border-color .14s, background .14s}
+  .choice:hover{border-color:var(--draw)}
+  .choice.sel{border-color:var(--draw); background:var(--draw-soft)}
+  .choice.right{border-color:var(--ok); background:var(--ok-soft)}
+  .choice.wrong{border-color:var(--no); background:var(--no-soft)}
+  .btns{display:flex; flex-wrap:wrap; gap:8px; margin:20px 0 0; padding-top:17px; border-top:1px solid var(--line)}
+  .btn{font-weight:600; font-size:13.5px; padding:10px 15px; border-radius:3px; border:1.5px solid var(--line-2); background:var(--sheet); color:var(--ink); cursor:pointer; transition:.14s}
+  .btn:hover{border-color:var(--ink)}
+  .btn.primary{background:var(--draw); border-color:var(--draw); color:var(--on-draw)}
+  .btn.primary:hover{filter:brightness(1.08)}
+  .btn:disabled{opacity:.5; cursor:default}
+  .btn:focus-visible, .choice:focus-visible, .chip:focus-visible, .linkbtn:focus-visible, select:focus-visible{outline:2.5px solid var(--draw); outline-offset:2px}
+  .fb{margin:15px 0 0; padding:11px 13px; border-radius:3px; font-size:16px; display:none}
+  .fb.show{display:block}
+  .fb.good{background:var(--ok-soft); color:var(--ok); border:1px solid color-mix(in srgb,var(--ok) 35%, transparent)}
+  .fb.bad{background:var(--no-soft); color:var(--no); border:1px solid color-mix(in srgb,var(--no) 35%, transparent)}
+  .steps{margin:13px 0 0; background:var(--sunk); border:1px solid var(--line); border-left:3px solid var(--given); padding:13px 15px}
+  .steps ol{margin:0; padding-left:19px; display:flex; flex-direction:column; gap:7px; font-size:15.5px; color:var(--ink-2)}
+  .steps ol li::marker{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--muted)}
+  
+  /* ---- solver ---- */
+  .solver{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:0 0 4px}
+  .solver label{display:flex; flex-direction:column; gap:6px}
+  .solver .label{color:var(--muted)}
+  .solver input{width:100%}
+  .readout{display:flex; flex-wrap:wrap; gap:18px; margin-top:16px; padding-top:14px; border-top:1px dashed var(--line-2)}
+  .readout div{display:flex; flex-direction:column; gap:2px}
+  .readout .v{font-family:"JetBrains Mono",monospace; font-size:21px; font-weight:500; color:var(--draw); font-variant-numeric:tabular-nums}
+  
+  /* ---- proofs ---- */
+  .proof-pick{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px}
+  table.proof{width:100%; border-collapse:collapse; font-size:16px}
+  table.proof th{text-align:left; font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); font-weight:400; padding:0 10px 8px 0; border-bottom:1.5px solid var(--ink-2)}
+  table.proof td{padding:9px 10px 9px 0; border-bottom:1px solid var(--line); vertical-align:middle}
+  table.proof td:first-child{width:8%; color:var(--muted); font-family:"JetBrains Mono",monospace; font-size:13px}
+  table.proof td:nth-child(2){width:44%}
+  table.proof select{width:100%; font-size:14px; padding:8px 9px}
+  table.proof select.right{border-color:var(--ok); background:var(--ok-soft)}
+  table.proof select.wrong{border-color:var(--no); background:var(--no-soft)}
+  .gp{display:flex; gap:22px; flex-wrap:wrap; margin-bottom:16px}
+  .gp div{flex:1 1 200px}
+  .gp .label{display:block; margin-bottom:3px}
+  .gp p{margin:0; font-size:16.5px}
+  
+  /* ---- formula sheet ---- */
+  .fsheet{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:0; border-top:1px solid var(--line); border-left:1px solid var(--line)}
+  .frow{border-right:1px solid var(--line); border-bottom:1px solid var(--line); padding:15px 17px; background:var(--sheet)}
+  .frow h4{margin:0 0 7px; font-family:"Archivo",sans-serif; font-size:14.5px; font-weight:600}
+  .frow p{margin:0; font-family:"JetBrains Mono",monospace; font-size:13.5px; color:var(--draw)}
+  .frow small{display:block; margin-top:6px; color:var(--muted); font-size:13px; font-family:"Newsreader",serif}
+  @media (prefers-reduced-motion:reduce){ .pbar span{transition:none} }
+  /* ---------- learning path ---------- */
+  #path{padding:34px 0 0}
+  .resume{display:flex; gap:8px 14px; align-items:baseline; flex-wrap:wrap; background:var(--sheet); border:1px solid var(--line);
+    border-left:3px solid var(--draw); border-radius:0 3px 3px 0; padding:14px 17px; margin:0 0 26px; box-shadow:var(--shadow)}
+  .resume b{font-family:"Archivo",sans-serif; font-weight:700; font-size:16.5px}
+  .resume span{color:var(--muted); font-size:15.5px}
+  .resume .streak{font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--draw); background:var(--draw-soft); padding:4px 9px; border-radius:3px}
+  .path-top{display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap}
+  .path-top h2{font-size:clamp(24px,3.3vw,33px); font-weight:700; letter-spacing:-.025em; margin-top:6px}
+  .path-top .daymeta{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--muted)}
+  .goal{color:var(--ink-2); font-size:17px; margin:8px 0 0; max-width:58ch}
+  .daystrip{display:flex; gap:7px; overflow-x:auto; padding:20px 2px 6px; scrollbar-width:thin}
+  .dbtn{flex:0 0 auto; width:40px; height:40px; border-radius:3px; border:1.5px solid var(--line-2); background:var(--sheet);
+    color:var(--muted); font-family:"JetBrains Mono",monospace; font-size:13px; cursor:pointer; display:grid; place-items:center; transition:.14s; padding:0}
+  .dbtn:hover{border-color:var(--draw); color:var(--draw)}
+  .dbtn.done{background:var(--ok-soft); border-color:var(--ok); color:var(--ok)}
+  .dbtn.now{background:var(--draw); border-color:var(--draw); color:var(--on-draw); font-weight:700; box-shadow:0 0 0 4px var(--draw-soft)}
+  .dbtn.locked{opacity:.42}
+  .striprow{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:22px}
+  .lesson .step{margin-bottom:17px}
+  .lesson h4{font-family:"Archivo",sans-serif; font-size:17px; font-weight:700; letter-spacing:-.01em; margin:0 0 5px}
+  .lesson p{margin:0; font-size:16.8px; color:var(--ink-2)}
+  .lesson .step:last-of-type{margin-bottom:0}
+  .tip{margin-top:18px; background:var(--given-soft); border-left:3px solid var(--given); padding:13px 15px; font-size:15.8px; color:var(--ink)}
+  .tip b{font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--given); display:block; margin-bottom:5px}
+  .tgt{display:flex; align-items:center; gap:8px}
+  .tgt .pip{width:10px; height:10px; border-radius:99px; background:var(--sunk); border:1.5px solid var(--line-2); transition:.2s}
+  .tgt .pip.on{background:var(--ok); border-color:var(--ok)}
+  .tgt .tgtxt{font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--muted); letter-spacing:.04em}
+  .done-banner{margin:18px 0 0; padding:16px 18px; background:var(--ok-soft); border:1px solid color-mix(in srgb,var(--ok) 35%, transparent)}
+  .done-banner h4{font-family:"Archivo",sans-serif; font-size:17.5px; margin:0 0 4px; color:var(--ok)}
+  .done-banner p{margin:0 0 12px; font-size:15.8px; color:var(--ink-2)}
+  .lib-head{border-top:1px solid var(--line); margin-top:54px; padding-top:46px}
+  .lib-head h2{font-size:clamp(24px,3.3vw,33px); font-weight:700; letter-spacing:-.025em; margin:6px 0 8px}
+  .lib-head p{margin:0; color:var(--muted); max-width:60ch}
+  footer{border-top:1px solid var(--line); margin-top:60px; padding:26px 0 60px; color:var(--muted); font-size:14.5px}
+  footer .wrap{display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap}
+
+/* ---------- added by the app shell ---------- */
+.bigwrap{ margin:16px 0 0 }
+.qfig{ margin:0 0 16px }
+.qfig[hidden]{ display:none !important }
+.synced{ font-family:inherit; font-size:13.5px; color:var(--muted) }

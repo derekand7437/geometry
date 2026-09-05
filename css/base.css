@@ -1,0 +1,103 @@
+/* Shell chrome shared by every page: the top bar, the account control and the sign-in dialog.
+   Colours come from whichever subject stylesheet is loaded alongside this one. */
+:root{ color-scheme: light dark; }
+html, body{ margin:0 }
+img{ max-width:100% }
+[hidden]{ display:none !important }
+
+.topbar{
+  border-bottom:1px solid var(--line, #ddd);
+  background:var(--surface, var(--sheet, #fff));
+}
+.topbar-inner{
+  display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  padding:11px 22px; max-width:1140px; margin:0 auto;
+}
+.brand{
+  font-family:inherit; font-weight:700; letter-spacing:-.02em; font-size:16px;
+  color:var(--ink, #111); text-decoration:none;
+}
+.subjects{ display:flex; gap:4px; margin-right:auto }
+.subjects a{
+  text-decoration:none; font-size:14px; font-weight:600; padding:6px 11px; border-radius:6px;
+  color:var(--muted, #667); transition:background .14s, color .14s;
+}
+.subjects a:hover{ color:var(--accent, var(--draw, #333)) }
+.subjects a.on{
+  color:var(--accent, var(--draw, #333));
+  background:var(--accent-soft, var(--draw-soft, #eee));
+}
+.account{ display:flex; align-items:center; gap:10px; font-size:14px; color:var(--muted, #667) }
+.account .who b{ color:var(--ink, #111) }
+
+dialog.auth{
+  border:1px solid var(--line, #ccc); border-radius:12px; padding:0; max-width:400px; width:calc(100% - 32px);
+  background:var(--surface, var(--sheet, #fff)); color:var(--ink, #111);
+  box-shadow:0 24px 60px -20px rgba(0,0,0,.45);
+}
+dialog.auth::backdrop{ background:rgba(10,14,18,.5); backdrop-filter:blur(2px) }
+.auth-card{ display:flex; flex-direction:column; gap:14px; padding:24px }
+.auth-card h3{ margin:0; font-size:21px; font-weight:700; letter-spacing:-.02em }
+.auth-why{ margin:0; font-size:14.5px; color:var(--muted, #667); line-height:1.5 }
+.auth-card label{ display:flex; flex-direction:column; gap:5px; font-size:13px; font-weight:600; color:var(--ink-2, #333) }
+.auth-card input{
+  font:inherit; font-size:15px; padding:10px 12px; border-radius:8px;
+  border:1.5px solid var(--line-2, #bbb); background:var(--sunk, #f6f6f6); color:var(--ink, #111);
+}
+.auth-card input:focus{ outline:none; border-color:var(--accent, var(--draw, #369)) }
+.auth-err{
+  margin:0; font-size:14px; padding:10px 12px; border-radius:8px;
+  background:var(--no-soft, #fdeceb); color:var(--no, #b33);
+}
+.auth-btns{ display:flex; gap:9px }
+.auth-swap{ margin:0; font-size:14px; color:var(--muted, #667) }
+
+/* ---------- stats panel (shared by the landing page and each subject page) ---------- */
+:root{
+  --series-1:#2a78d6; --series-2:#eb6834;
+  --viz-track:#E6EBF0; --viz-grid:#E1E6EB; --viz-base:#C3CBD3;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    --series-1:#3987e5; --series-2:#d95926;
+    --viz-track:#1F2A33; --viz-grid:#232F39; --viz-base:#34424E;
+  }
+}
+:root[data-theme="dark"]{
+  --series-1:#3987e5; --series-2:#d95926;
+  --viz-track:#1F2A33; --viz-grid:#232F39; --viz-base:#34424E;
+}
+.account .offline{ font-size:13.5px }
+.tiles{ display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:13px; margin-bottom:26px }
+.tile{ background:var(--surface, var(--sheet)); border:1px solid var(--line); border-radius:4px; padding:15px 17px; display:flex; flex-direction:column; gap:3px }
+.tile-label{ font-family:"IBM Plex Mono","JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted) }
+.tile-value{ font-family:"IBM Plex Mono","JetBrains Mono",monospace; font-size:29px; font-weight:500; letter-spacing:-.02em; color:var(--ink); line-height:1.1 }
+.tile-note{ font-size:14px; color:var(--muted) }
+.viz{ position:relative }
+.viz-svg{ display:block; width:100%; height:auto; overflow:visible }
+.viz-cat{ fill:var(--ink); font-size:12.5px; font-family:"IBM Plex Mono","JetBrains Mono",monospace }
+.viz-val,.viz-tick{ fill:var(--muted); font-size:12px; font-variant-numeric:tabular-nums; font-family:"IBM Plex Mono","JetBrains Mono",monospace }
+.viz-track{ fill:var(--viz-track) }
+.viz-bar,.viz-s1{ fill:var(--series-1) }
+.viz-s2{ fill:var(--series-2) }
+.viz-grid{ stroke:var(--viz-grid); stroke-width:1 }
+.viz-base{ stroke:var(--viz-base); stroke-width:1 }
+.viz-hit{ fill:transparent }
+.viz-row:hover .viz-bar{ filter:brightness(1.08) }
+.viz-empty{ margin:0; color:var(--muted); font-size:15px }
+.viz-tip{ position:absolute; pointer-events:none; z-index:5; background:var(--ink); color:var(--bg);
+  padding:7px 10px; border-radius:5px; font-size:13px; line-height:1.35; display:flex; flex-direction:column; gap:1px;
+  box-shadow:0 6px 20px -8px rgba(0,0,0,.6); white-space:nowrap }
+.legend{ display:flex; gap:16px; margin:0 0 12px; font-size:14px; color:var(--ink-2) }
+.legend span{ display:inline-flex; align-items:center; gap:7px }
+.legend i{ width:11px; height:11px; border-radius:2px; display:inline-block }
+.legend .s1{ background:var(--series-1) } .legend .s2{ background:var(--series-2) }
+details.table-view{ margin-top:14px }
+details.table-view summary{ cursor:pointer; color:var(--muted); font-size:14px }
+details.table-view table{ width:100%; border-collapse:collapse; margin-top:12px; font-size:14.5px }
+details.table-view caption{ text-align:left; color:var(--muted); font-size:13px; padding-bottom:6px }
+details.table-view th{ text-align:left; font-family:"IBM Plex Mono","JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); font-weight:400; border-bottom:1.5px solid var(--line-2); padding:0 10px 7px 0 }
+details.table-view td{ padding:7px 10px 7px 0; border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums }
+.stats-prompt{ border:1px dashed var(--line-2); border-radius:4px; padding:22px; text-align:center; color:var(--muted) }
+.stats-prompt b{ color:var(--ink) }
