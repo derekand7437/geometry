@@ -1,0 +1,1465 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A 21-day guided path through first-semester geometry, from points and lines to circles and proofs, with drawn figures and unlimited practice.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%93%90%3C%2Ftext%3E%3C%2Fsvg%3E">
+  <style>
+    :root{ color-scheme: light dark; }
+    html, body{ margin:0; }
+    body{ font:14px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    img{ max-width:100%; }
+    [hidden]{ display:none !important; }
+  </style>
+  <title>Compass and Proof</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap">
+  <style>
+  :root{
+    --bg:#E9EDF1; --sheet:#FCFDFE; --panel:#F2F5F8; --sunk:#EAEFF4;
+    --ink:#121A22; --ink-2:#36434F; --muted:#5F6E7C; --line:#CDD7E0; --line-2:#B4C1CD;
+    --grid:rgba(18,26,34,.055);
+    --draw:#0E6E78; --draw-soft:#DDEFF1;
+    --given:#A8620A; --given-soft:#F7ECDC;
+    --ok:#1F7A4D; --ok-soft:#E0F1E7; --no:#B23B2F; --no-soft:#FAE8E5;
+    --on-draw:#FFFFFF;
+    --shadow:0 1px 1px rgba(18,26,34,.06), 0 14px 30px -20px rgba(18,26,34,.45);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0C1116; --sheet:#151C23; --panel:#1B242C; --sunk:#111820;
+      --ink:#E7EDF3; --ink-2:#C0CCD7; --muted:#8B9AA7; --line:#28333D; --line-2:#37454F;
+      --grid:rgba(231,237,243,.05);
+      --draw:#4FC7D3; --draw-soft:#123034;
+      --given:#E5A34B; --given-soft:#31261A;
+      --ok:#54C489; --ok-soft:#152B21; --no:#EE7A6D; --no-soft:#2E1D1B;
+      --on-draw:#08191C;
+      --shadow:0 1px 1px rgba(0,0,0,.5), 0 16px 34px -22px rgba(0,0,0,.9);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0C1116; --sheet:#151C23; --panel:#1B242C; --sunk:#111820;
+    --ink:#E7EDF3; --ink-2:#C0CCD7; --muted:#8B9AA7; --line:#28333D; --line-2:#37454F;
+    --grid:rgba(231,237,243,.05);
+    --draw:#4FC7D3; --draw-soft:#123034;
+    --given:#E5A34B; --given-soft:#31261A;
+    --ok:#54C489; --ok-soft:#152B21; --no:#EE7A6D; --no-soft:#2E1D1B;
+    --on-draw:#08191C;
+    --shadow:0 1px 1px rgba(0,0,0,.5), 0 16px 34px -22px rgba(0,0,0,.9);
+  }
+  
+  *{box-sizing:border-box}
+  body{
+    margin:0; color:var(--ink);
+    background-color:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:24px 24px;
+    font-family:"Newsreader", Georgia, serif; font-size:17.5px; line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.disp,.btn,.chip{font-family:"Archivo","Helvetica Neue",Arial,sans-serif; margin:0; text-wrap:balance}
+  .mono,code,input,select,.num{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace}
+  .wrap{max-width:1140px; margin:0 auto; padding:0 22px}
+  .label{font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted)}
+  
+  /* ---- header ---- */
+  header.top{padding:46px 0 0}
+  h1{font-size:clamp(36px,6.6vw,72px); font-weight:700; letter-spacing:-.035em; line-height:.94; text-transform:uppercase}
+  h1 em{font-style:normal; color:var(--draw)}
+  .lede{max-width:60ch; color:var(--ink-2); font-size:19px; margin:16px 0 0}
+  .ruler{margin:26px 0 4px; height:15px; border-top:1.5px solid var(--ink-2);
+    background-image:repeating-linear-gradient(90deg, var(--ink-2) 0 1px, transparent 1px 16px), repeating-linear-gradient(90deg, var(--ink-2) 0 1px, transparent 1px 80px);
+    background-size:16px 6px, 80px 12px; background-repeat:repeat-x, repeat-x; background-position:0 0, 0 0; opacity:.5}
+  .progress{display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin:18px 0 0}
+  .pbar{flex:1 1 200px; min-width:150px; height:7px; background:var(--sunk); border:1px solid var(--line); border-radius:99px; overflow:hidden}
+  .pbar span{display:block; height:100%; width:0; background:var(--draw); transition:width .4s ease}
+  .pnum{font-family:"JetBrains Mono",monospace; font-size:12.5px; color:var(--muted); font-variant-numeric:tabular-nums}
+  .linkbtn{background:none; border:none; color:var(--muted); font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; padding:4px 2px; border-bottom:1px solid transparent}
+  .linkbtn:hover{color:var(--draw); border-bottom-color:var(--draw)}
+  
+  /* ---- nav ---- */
+  nav.bar{position:sticky; top:0; z-index:20; margin-top:26px; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    background:color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter:blur(10px)}
+  .bar-inner{display:flex; gap:0; overflow-x:auto; max-width:1140px; margin:0 auto; padding:0 22px}
+  .chip{flex:0 0 auto; background:none; border:none; border-bottom:2.5px solid transparent; color:var(--muted);
+    font-weight:600; font-size:13px; letter-spacing:.02em; padding:13px 15px; cursor:pointer; text-decoration:none; white-space:nowrap}
+  .chip:hover{color:var(--ink)}
+  .chip.on{color:var(--draw); border-bottom-color:var(--draw)}
+  
+  /* ---- units ---- */
+  main{padding:6px 0 80px}
+  .unit{padding:52px 0 0; scroll-margin-top:70px}
+  .unit-head{display:flex; align-items:center; gap:12px; margin-bottom:8px}
+  .unit-head .label{color:var(--draw)}
+  .rule{flex:1; height:1px; background:var(--line)}
+  .unit h2{font-size:clamp(25px,3.3vw,34px); font-weight:700; letter-spacing:-.025em}
+  .unit-sub{color:var(--muted); font-size:16.5px; margin:6px 0 24px; max-width:62ch}
+  .grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.08fr); gap:22px; align-items:start}
+  @media (max-width:920px){ .grid{grid-template-columns:minmax(0,1fr)} }
+  
+  .sheet{background:var(--sheet); border:1px solid var(--line); box-shadow:var(--shadow); border-radius:3px; position:relative}
+  .sheet::before{content:""; position:absolute; inset:7px; border:1px solid var(--line); border-radius:2px; pointer-events:none; opacity:.55}
+  .pad{padding:24px 26px 26px; position:relative}
+  .notes h3{margin-bottom:14px}
+  .notes ul{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:12px}
+  .notes li{padding-left:22px; position:relative; font-size:16.8px}
+  .notes li::before{content:""; position:absolute; left:0; top:.66em; width:11px; height:1.5px; background:var(--draw)}
+  .notes b{font-weight:600}
+  .eq{display:block; background:var(--sunk); border:1px solid var(--line); border-radius:3px; padding:11px 13px; margin:14px 0 0;
+    font-family:"JetBrains Mono",monospace; font-size:14px; overflow-x:auto; white-space:nowrap; color:var(--ink)}
+  figure{margin:0 0 18px}
+  figure svg{display:block; width:100%; height:auto; max-width:380px; margin:0 auto}
+  figcaption{margin-top:8px; text-align:center; color:var(--muted); font-size:13.5px}
+  .svg-line{stroke:var(--ink-2); stroke-width:2; fill:none; stroke-linecap:round}
+  .svg-thin{stroke:var(--line-2); stroke-width:1.2; fill:none}
+  .svg-draw{stroke:var(--draw); stroke-width:2.4; fill:none; stroke-linecap:round}
+  .svg-fill{fill:var(--draw-soft); stroke:var(--draw); stroke-width:1.6}
+  .svg-txt{fill:var(--ink); font-family:"JetBrains Mono",monospace; font-size:13px}
+  .svg-mut{fill:var(--muted); font-family:"JetBrains Mono",monospace; font-size:12px}
+  .svg-hi{fill:var(--draw); font-family:"JetBrains Mono",monospace; font-size:13px; font-weight:700}
+  .svg-dot{fill:var(--ink)}
+  .hi-ring{fill:none; stroke:var(--draw); stroke-width:1.6}
+  
+  /* ---- drill ---- */
+  .drill-head{display:flex; justify-content:space-between; align-items:center; padding:13px 22px; background:var(--panel); border-bottom:1px solid var(--line); position:relative; z-index:1; margin:0}
+  .score{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
+  .qtext{font-size:18.5px; margin:0}
+  .qtext b{color:var(--draw); font-weight:600}
+  .ansrow{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:18px 0 0}
+  input.in, select.in{background:var(--sunk); border:1.5px solid var(--line-2); border-radius:3px; padding:10px 12px; font-size:15.5px; color:var(--ink); flex:1 1 180px; min-width:0}
+  input.in:focus, select.in:focus{outline:none; border-color:var(--draw); box-shadow:0 0 0 3px var(--draw-soft)}
+  .unitlabel{color:var(--muted); font-size:14.5px; font-family:"JetBrains Mono",monospace}
+  .choices{display:grid; gap:8px; margin:18px 0 0}
+  .choice{text-align:left; background:var(--sunk); border:1.5px solid var(--line); border-radius:3px; padding:11px 14px;
+    font-family:"Newsreader",serif; font-size:16.5px; color:var(--ink); cursor:pointer; transition:border-color .14s, background .14s}
+  .choice:hover{border-color:var(--draw)}
+  .choice.sel{border-color:var(--draw); background:var(--draw-soft)}
+  .choice.right{border-color:var(--ok); background:var(--ok-soft)}
+  .choice.wrong{border-color:var(--no); background:var(--no-soft)}
+  .btns{display:flex; flex-wrap:wrap; gap:8px; margin:20px 0 0; padding-top:17px; border-top:1px solid var(--line)}
+  .btn{font-weight:600; font-size:13.5px; padding:10px 15px; border-radius:3px; border:1.5px solid var(--line-2); background:var(--sheet); color:var(--ink); cursor:pointer; transition:.14s}
+  .btn:hover{border-color:var(--ink)}
+  .btn.primary{background:var(--draw); border-color:var(--draw); color:var(--on-draw)}
+  .btn.primary:hover{filter:brightness(1.08)}
+  .btn:disabled{opacity:.5; cursor:default}
+  .btn:focus-visible, .choice:focus-visible, .chip:focus-visible, .linkbtn:focus-visible, select:focus-visible{outline:2.5px solid var(--draw); outline-offset:2px}
+  .fb{margin:15px 0 0; padding:11px 13px; border-radius:3px; font-size:16px; display:none}
+  .fb.show{display:block}
+  .fb.good{background:var(--ok-soft); color:var(--ok); border:1px solid color-mix(in srgb,var(--ok) 35%, transparent)}
+  .fb.bad{background:var(--no-soft); color:var(--no); border:1px solid color-mix(in srgb,var(--no) 35%, transparent)}
+  .steps{margin:13px 0 0; background:var(--sunk); border:1px solid var(--line); border-left:3px solid var(--given); padding:13px 15px}
+  .steps ol{margin:0; padding-left:19px; display:flex; flex-direction:column; gap:7px; font-size:15.5px; color:var(--ink-2)}
+  .steps ol li::marker{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--muted)}
+  
+  /* ---- solver ---- */
+  .solver{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:0 0 4px}
+  .solver label{display:flex; flex-direction:column; gap:6px}
+  .solver .label{color:var(--muted)}
+  .solver input{width:100%}
+  .readout{display:flex; flex-wrap:wrap; gap:18px; margin-top:16px; padding-top:14px; border-top:1px dashed var(--line-2)}
+  .readout div{display:flex; flex-direction:column; gap:2px}
+  .readout .v{font-family:"JetBrains Mono",monospace; font-size:21px; font-weight:500; color:var(--draw); font-variant-numeric:tabular-nums}
+  
+  /* ---- proofs ---- */
+  .proof-pick{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px}
+  table.proof{width:100%; border-collapse:collapse; font-size:16px}
+  table.proof th{text-align:left; font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); font-weight:400; padding:0 10px 8px 0; border-bottom:1.5px solid var(--ink-2)}
+  table.proof td{padding:9px 10px 9px 0; border-bottom:1px solid var(--line); vertical-align:middle}
+  table.proof td:first-child{width:8%; color:var(--muted); font-family:"JetBrains Mono",monospace; font-size:13px}
+  table.proof td:nth-child(2){width:44%}
+  table.proof select{width:100%; font-size:14px; padding:8px 9px}
+  table.proof select.right{border-color:var(--ok); background:var(--ok-soft)}
+  table.proof select.wrong{border-color:var(--no); background:var(--no-soft)}
+  .gp{display:flex; gap:22px; flex-wrap:wrap; margin-bottom:16px}
+  .gp div{flex:1 1 200px}
+  .gp .label{display:block; margin-bottom:3px}
+  .gp p{margin:0; font-size:16.5px}
+  
+  /* ---- formula sheet ---- */
+  .fsheet{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:0; border-top:1px solid var(--line); border-left:1px solid var(--line)}
+  .frow{border-right:1px solid var(--line); border-bottom:1px solid var(--line); padding:15px 17px; background:var(--sheet)}
+  .frow h4{margin:0 0 7px; font-family:"Archivo",sans-serif; font-size:14.5px; font-weight:600}
+  .frow p{margin:0; font-family:"JetBrains Mono",monospace; font-size:13.5px; color:var(--draw)}
+  .frow small{display:block; margin-top:6px; color:var(--muted); font-size:13px; font-family:"Newsreader",serif}
+  @media (prefers-reduced-motion:reduce){ .pbar span{transition:none} }
+  /* ---------- learning path ---------- */
+  #path{padding:34px 0 0}
+  .resume{display:flex; gap:8px 14px; align-items:baseline; flex-wrap:wrap; background:var(--sheet); border:1px solid var(--line);
+    border-left:3px solid var(--draw); border-radius:0 3px 3px 0; padding:14px 17px; margin:0 0 26px; box-shadow:var(--shadow)}
+  .resume b{font-family:"Archivo",sans-serif; font-weight:700; font-size:16.5px}
+  .resume span{color:var(--muted); font-size:15.5px}
+  .resume .streak{font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--draw); background:var(--draw-soft); padding:4px 9px; border-radius:3px}
+  .path-top{display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap}
+  .path-top h2{font-size:clamp(24px,3.3vw,33px); font-weight:700; letter-spacing:-.025em; margin-top:6px}
+  .path-top .daymeta{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--muted)}
+  .goal{color:var(--ink-2); font-size:17px; margin:8px 0 0; max-width:58ch}
+  .daystrip{display:flex; gap:7px; overflow-x:auto; padding:20px 2px 6px; scrollbar-width:thin}
+  .dbtn{flex:0 0 auto; width:40px; height:40px; border-radius:3px; border:1.5px solid var(--line-2); background:var(--sheet);
+    color:var(--muted); font-family:"JetBrains Mono",monospace; font-size:13px; cursor:pointer; display:grid; place-items:center; transition:.14s; padding:0}
+  .dbtn:hover{border-color:var(--draw); color:var(--draw)}
+  .dbtn.done{background:var(--ok-soft); border-color:var(--ok); color:var(--ok)}
+  .dbtn.now{background:var(--draw); border-color:var(--draw); color:var(--on-draw); font-weight:700; box-shadow:0 0 0 4px var(--draw-soft)}
+  .dbtn.locked{opacity:.42}
+  .striprow{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:22px}
+  .lesson .step{margin-bottom:17px}
+  .lesson h4{font-family:"Archivo",sans-serif; font-size:17px; font-weight:700; letter-spacing:-.01em; margin:0 0 5px}
+  .lesson p{margin:0; font-size:16.8px; color:var(--ink-2)}
+  .lesson .step:last-of-type{margin-bottom:0}
+  .tip{margin-top:18px; background:var(--given-soft); border-left:3px solid var(--given); padding:13px 15px; font-size:15.8px; color:var(--ink)}
+  .tip b{font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--given); display:block; margin-bottom:5px}
+  .tgt{display:flex; align-items:center; gap:8px}
+  .tgt .pip{width:10px; height:10px; border-radius:99px; background:var(--sunk); border:1.5px solid var(--line-2); transition:.2s}
+  .tgt .pip.on{background:var(--ok); border-color:var(--ok)}
+  .tgt .tgtxt{font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--muted); letter-spacing:.04em}
+  .done-banner{margin:18px 0 0; padding:16px 18px; background:var(--ok-soft); border:1px solid color-mix(in srgb,var(--ok) 35%, transparent)}
+  .done-banner h4{font-family:"Archivo",sans-serif; font-size:17.5px; margin:0 0 4px; color:var(--ok)}
+  .done-banner p{margin:0 0 12px; font-size:15.8px; color:var(--ink-2)}
+  .lib-head{border-top:1px solid var(--line); margin-top:54px; padding-top:46px}
+  .lib-head h2{font-size:clamp(24px,3.3vw,33px); font-weight:700; letter-spacing:-.025em; margin:6px 0 8px}
+  .lib-head p{margin:0; color:var(--muted); max-width:60ch}
+  footer{border-top:1px solid var(--line); margin-top:60px; padding:26px 0 60px; color:var(--muted); font-size:14.5px}
+  footer .wrap{display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap}
+  </style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <span class="label">Sophomore geometry &middot; figures, drills, proofs</span>
+    <h1>Compass<br><em>and Proof</em></h1>
+    <p class="lede">Start on Day 1 with nothing but a pencil. Each day is one short lesson and a handful of problems &mdash; ten minutes &mdash; and finishing it opens the next. Twenty-one days from now you will have covered the whole first semester, and every figure below redraws itself for each new problem.</p>
+    <div class="ruler" aria-hidden="true"></div>
+    <div class="progress">
+      <span class="label">Session</span>
+      <div class="pbar"><span id="pbar-fill"></span></div>
+      <span class="pnum" id="pnum">0 correct of 0</span>
+      <button class="linkbtn" id="reset">Reset progress</button>
+    </div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Units">
+  <div class="bar-inner">
+    <a class="chip" href="#path">Today&rsquo;s lesson</a>
+    <a class="chip" href="#angles">Angles &amp; parallel lines</a>
+    <a class="chip" href="#congruence">Triangle congruence</a>
+    <a class="chip" href="#right">Right triangles</a>
+    <a class="chip" href="#similar">Similarity</a>
+    <a class="chip" href="#circles">Circles</a>
+    <a class="chip" href="#coords">Coordinate geometry</a>
+    <a class="chip" href="#solids">Area &amp; volume</a>
+    <a class="chip" href="#proofs">Two-column proofs</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section id="path">
+    <div class="path-top">
+      <div>
+        <span class="label" id="day-eyebrow">Day 1 of 21</span>
+        <h2 id="day-title">&nbsp;</h2>
+        <p class="goal" id="day-goal">&nbsp;</p>
+      </div>
+      <span class="daymeta" id="day-meta"></span>
+    </div>
+    <div class="daystrip" id="daystrip"></div>
+    <div class="striprow">
+      <span class="label" id="day-progress"></span>
+      <button class="linkbtn" id="unlock-all">Unlock every day</button>
+    </div>
+    <div class="grid">
+      <div class="sheet"><div class="pad lesson" id="lesson"></div></div>
+      <div class="sheet"><div class="drill" id="daydrill"></div></div>
+    </div>
+  </section>
+
+  <div class="lib-head">
+    <span class="label">The library</span>
+    <h2>Every topic, any time</h2>
+    <p>The full reference and unlimited practice at test difficulty, including the two-column proof builder. Use it to review a unit you have already walked through, or the night before a test.</p>
+  </div>
+
+  <!-- ANGLES -->
+  <section class="unit" id="angles">
+    <div class="unit-head"><span class="label">Unit 01</span><span class="rule"></span></div>
+    <h2>Angles &amp; parallel lines</h2>
+    <p class="unit-sub">One transversal across two parallel lines makes eight angles &mdash; but only two different sizes. Learn which name goes with which pair and the rest is arithmetic.</p>
+    <div class="grid">
+      <div class="sheet notes"><div class="pad">
+        <figure id="fig-transversal"></figure>
+        <h3 class="label">What to remember</h3>
+        <ul>
+          <li><b>Only two sizes exist.</b> Angles 1, 4, 5, 8 are all congruent, and so are 2, 3, 6, 7. Any angle from one group plus any angle from the other adds to 180&deg;.</li>
+          <li><b>Vertical angles</b> are across the X from each other and always congruent &mdash; this one does not need parallel lines.</li>
+          <li><b>Corresponding angles</b> sit in matching corners at the two intersections. Congruent when the lines are parallel.</li>
+          <li><b>Alternate interior angles</b> are between the parallel lines, on opposite sides of the transversal. Congruent.</li>
+          <li><b>Same-side interior angles</b> are between the lines on the <i>same</i> side. Supplementary &mdash; they add to 180&deg;.</li>
+          <li><b>A linear pair</b> is any two angles that make a straight line together. Always supplementary, parallel or not.</li>
+        </ul>
+        <span class="eq">congruent: vertical, corresponding, alternate &nbsp;|&nbsp; supplementary: linear pair, same-side</span>
+      </div></div>
+      <div class="sheet"><div class="drill" data-topic="angles"></div></div>
+    </div>
+  </section>
+
+  <!-- CONGRUENCE -->
+  <section class="unit" id="congruence">
+    <div class="unit-head"><span class="label">Unit 02</span><span class="rule"></span></div>
+    <h2>Triangle congruence</h2>
+    <p class="unit-sub">Five shortcuts prove two triangles identical without checking all six parts &mdash; and two famous non-shortcuts that prove nothing.</p>
+    <div class="grid">
+      <div class="sheet notes"><div class="pad">
+        <figure id="fig-congruence"></figure>
+        <h3 class="label">What to remember</h3>
+        <ul>
+          <li><b>SSS</b> &mdash; three pairs of sides match. Rigid: a triangle with fixed sides has only one shape.</li>
+          <li><b>SAS</b> &mdash; two sides and the angle <i>between</i> them. The angle must be included, sandwiched by the two sides.</li>
+          <li><b>ASA</b> &mdash; two angles and the side between them.</li>
+          <li><b>AAS</b> &mdash; two angles and a side <i>outside</i> them. Legal, because knowing two angles gives you the third.</li>
+          <li><b>HL</b> &mdash; right triangles only: hypotenuse plus one leg.</li>
+          <li><b>SSA and AAA prove nothing.</b> SSA can be swung into two different triangles; AAA gives a similar shape at any size.</li>
+          <li><b>Reflexive side or angle:</b> when two triangles share a segment, that segment is congruent to itself &mdash; it is often the third fact you need.</li>
+        </ul>
+      </div></div>
+      <div class="sheet"><div class="drill" data-topic="congruence"></div></div>
+    </div>
+  </section>
+
+  <!-- RIGHT TRIANGLES -->
+  <section class="unit" id="right">
+    <div class="unit-head"><span class="label">Unit 03</span><span class="rule"></span></div>
+    <h2>Right triangles</h2>
+    <p class="unit-sub">The Pythagorean theorem plus two triangles whose sides you should know by heart, because they appear on every test without measurements.</p>
+    <div class="grid">
+      <div class="sheet notes"><div class="pad">
+        <h3 class="label">Live solver &mdash; type two legs</h3>
+        <div class="solver">
+          <label><span class="label">Leg a</span><input class="in mono" id="leg-a" type="number" min="0.1" step="0.1" value="3"></label>
+          <label><span class="label">Leg b</span><input class="in mono" id="leg-b" type="number" min="0.1" step="0.1" value="4"></label>
+        </div>
+        <figure id="fig-right"></figure>
+        <div class="readout">
+          <div><span class="label">Hypotenuse</span><span class="v" id="out-c">5</span></div>
+          <div><span class="label">Area</span><span class="v" id="out-area">6</span></div>
+          <div><span class="label">Perimeter</span><span class="v" id="out-p">12</span></div>
+        </div>
+        <ul style="margin-top:20px">
+          <li><b>a&sup2; + b&sup2; = c&sup2;</b>, and c is always the hypotenuse &mdash; the side across from the right angle, never a leg.</li>
+          <li><b>Finding a leg?</b> Subtract: a&sup2; = c&sup2; &minus; b&sup2;. Adding when you should subtract is the most common lost point on this unit.</li>
+          <li><b>45-45-90:</b> legs are equal and the hypotenuse is leg &times; &radic;2.</li>
+          <li><b>30-60-90:</b> short leg is x, long leg is x&radic;3, hypotenuse is 2x. The short leg is always across from the 30&deg; angle.</li>
+          <li><b>Memorize the triples</b> &mdash; 3-4-5, 5-12-13, 8-15-17, 7-24-25 &mdash; and their multiples, like 6-8-10.</li>
+        </ul>
+      </div></div>
+      <div class="sheet"><div class="drill" data-topic="right"></div></div>
+    </div>
+  </section>
+
+  <!-- SIMILARITY -->
+  <section class="unit" id="similar">
+    <div class="unit-head"><span class="label">Unit 04</span><span class="rule"></span></div>
+    <h2>Similarity</h2>
+    <p class="unit-sub">Same shape, different size. Angles are untouched; every length is multiplied by one number, and area is multiplied by its square.</p>
+    <div class="grid">
+      <div class="sheet notes"><div class="pad">
+        <figure id="fig-similar"></figure>
+        <h3 class="label">What to remember</h3>
+        <ul>
+          <li><b>Similar means</b> all corresponding angles are congruent and all corresponding sides are proportional.</li>
+          <li><b>AA is enough.</b> Two pairs of congruent angles prove similarity &mdash; you never need a side.</li>
+          <li><b>Scale factor k</b> = new length &divide; old length. Set up a proportion with matching sides and cross-multiply.</li>
+          <li><b>Perimeter scales by k, area scales by k&sup2;, volume by k&sup3;.</b> Double the sides and the area quadruples.</li>
+          <li><b>Write the similarity statement in order.</b> &triangle;ABC ~ &triangle;DEF means A pairs with D, so AB pairs with DE.</li>
+          <li><b>A line parallel to one side</b> of a triangle cuts the other two sides proportionally, which is where most in-class problems come from.</li>
+        </ul>
+        <span class="eq">AB/DE = BC/EF = AC/DF = k &nbsp;|&nbsp; area ratio = k&sup2;</span>
+      </div></div>
+      <div class="sheet"><div class="drill" data-topic="similar"></div></div>
+    </div>
+  </section>
+
+  <!-- CIRCLES -->
+  <section class="unit" id="circles">
+    <div class="unit-head"><span class="label">Unit 05</span><span class="rule"></span></div>
+    <h2>Circles</h2>
+    <p class="unit-sub">Every circle rule is really about one number &mdash; the arc. Where the angle's vertex sits decides whether you get the arc, half of it, or something in between.</p>
+    <div class="grid">
+      <div class="sheet notes"><div class="pad">
+        <figure id="fig-circle"></figure>
+        <h3 class="label">What to remember</h3>
+        <ul>
+          <li><b>A central angle equals its arc.</b> Vertex at the center, so a 70&deg; angle cuts a 70&deg; arc.</li>
+          <li><b>An inscribed angle is half its arc.</b> Vertex on the circle. The same arc gives every inscribed angle the same measure.</li>
+          <li><b>An angle inscribed in a semicircle is 90&deg;</b> &mdash; the arc is 180&deg;, so the angle is half of that.</li>
+          <li><b>A tangent meets the radius at 90&deg;</b> at the point of contact, which turns most tangent problems into Pythagorean problems.</li>
+          <li><b>Arc length</b> = (&theta;/360) &times; 2&pi;r. <b>Sector area</b> = (&theta;/360) &times; &pi;r&sup2;. Both are just a fraction of the whole circle.</li>
+          <li><b>The whole way around is 360&deg;</b>, so a major arc is 360 minus its minor arc.</li>
+        </ul>
+        <span class="eq">C = 2&pi;r &nbsp;|&nbsp; A = &pi;r&sup2; &nbsp;|&nbsp; inscribed = arc &divide; 2</span>
+      </div></div>
+      <div class="sheet"><div class="drill" data-topic="circles"></div></div>
+    </div>
+  </section>
+
+  <!-- COORDINATES -->
+  <section class="unit" id="coords">
+    <div class="unit-head"><span class="label">Unit 06</span><span class="rule"></span></div>
+    <h2>Coordinate geometry</h2>
+    <p class="unit-sub">Geometry on a grid, where three formulas answer almost everything &mdash; and two of them are secretly the Pythagorean theorem.</p>
+    <div class="grid">
+      <div class="sheet notes"><div class="pad">
+        <h3 class="label">What to remember</h3>
+        <ul>
+          <li><b>Distance</b> = &radic;((x&#8322;&minus;x&#8321;)&sup2; + (y&#8322;&minus;y&#8321;)&sup2;). It is the Pythagorean theorem with the legs measured off the grid.</li>
+          <li><b>Midpoint</b> = ((x&#8321;+x&#8322;)/2, (y&#8321;+y&#8322;)/2). Average the x's, average the y's &mdash; the answer is a point, not a number.</li>
+          <li><b>Slope</b> = (y&#8322;&minus;y&#8321;)/(x&#8322;&minus;x&#8321;), rise over run. Keep the points in the same order top and bottom.</li>
+          <li><b>Parallel lines have equal slopes.</b> Perpendicular slopes are opposite reciprocals: 2/3 becomes &minus;3/2, and their product is &minus;1.</li>
+          <li><b>Proving a shape</b> on a grid means picking the right tool: distance for side lengths, slope for right angles and parallel sides.</li>
+          <li><b>Horizontal lines have slope 0</b>; vertical lines have undefined slope, because you would be dividing by zero.</li>
+        </ul>
+        <span class="eq">d = &radic;(&Delta;x&sup2; + &Delta;y&sup2;) &nbsp;|&nbsp; M = (x&#772;, y&#772;) &nbsp;|&nbsp; m = &Delta;y/&Delta;x</span>
+      </div></div>
+      <div class="sheet"><div class="drill" data-topic="coords"></div></div>
+    </div>
+  </section>
+
+  <!-- AREA & VOLUME -->
+  <section class="unit" id="solids">
+    <div class="unit-head"><span class="label">Unit 07</span><span class="rule"></span></div>
+    <h2>Area &amp; volume</h2>
+    <p class="unit-sub">Mostly memory work. The sheet below is the one worth copying onto an index card; the drill beside it is where you find out if it stuck.</p>
+    <div class="grid">
+      <div class="sheet"><div class="pad">
+        <h3 class="label" style="margin-bottom:14px">Formula sheet</h3>
+        <div class="fsheet">
+          <div class="frow"><h4>Rectangle</h4><p>A = bh</p><small>Perimeter 2b + 2h</small></div>
+          <div class="frow"><h4>Triangle</h4><p>A = &frac12;bh</p><small>Height is perpendicular to the base</small></div>
+          <div class="frow"><h4>Trapezoid</h4><p>A = &frac12;(b&#8321;+b&#8322;)h</p><small>Average the parallel sides</small></div>
+          <div class="frow"><h4>Circle</h4><p>A = &pi;r&sup2; &nbsp; C = 2&pi;r</p><small>Halve the diameter first</small></div>
+          <div class="frow"><h4>Parallelogram</h4><p>A = bh</p><small>Not the slanted side &mdash; the height</small></div>
+          <div class="frow"><h4>Regular polygon</h4><p>A = &frac12;ap</p><small>a is the apothem, p the perimeter</small></div>
+          <div class="frow"><h4>Prism</h4><p>V = Bh</p><small>B is the area of the base</small></div>
+          <div class="frow"><h4>Cylinder</h4><p>V = &pi;r&sup2;h</p><small>Surface 2&pi;r&sup2; + 2&pi;rh</small></div>
+          <div class="frow"><h4>Pyramid</h4><p>V = &#8531;Bh</p><small>One third of the prism it fits in</small></div>
+          <div class="frow"><h4>Cone</h4><p>V = &#8531;&pi;r&sup2;h</p><small>One third of the cylinder</small></div>
+          <div class="frow"><h4>Sphere</h4><p>V = &#8532;&pi;r&sup3;</p><small>Surface 4&pi;r&sup2;</small></div>
+          <div class="frow"><h4>Angle sum</h4><p>(n &minus; 2) &times; 180&deg;</p><small>Interior angles of an n-gon</small></div>
+        </div>
+      </div></div>
+      <div class="sheet"><div class="drill" data-topic="solids"></div></div>
+    </div>
+  </section>
+
+  <!-- PROOFS -->
+  <section class="unit" id="proofs">
+    <div class="unit-head"><span class="label">Unit 08</span><span class="rule"></span></div>
+    <h2>Two-column proofs</h2>
+    <p class="unit-sub">The statements are written for you. Your job is the harder column: naming the reason that makes each line legal. Pick a proof, fill the reasons, then check.</p>
+    <div class="sheet"><div class="pad">
+      <div class="proof-pick" id="proof-pick"></div>
+      <div id="proof-host"></div>
+    </div></div>
+  </section>
+
+</main>
+
+<footer><div class="wrap">
+  <span>Numeric answers accept anything within about 1%, so rounding as you go is fine. Radicals work too &mdash; type 5&radic;2 as <span class="mono">5sqrt2</span>.</span>
+  <span class="mono" style="font-size:12px">Built for sophomore geometry</span>
+</div></footer>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var rnd=function(a){return a[Math.floor(Math.random()*a.length)]};
+var ri=function(a,b){return Math.floor(Math.random()*(b-a+1))+a};
+var PI=Math.PI;
+
+/* ---------- storage ---------- */
+var KEY="compassproof.v1", stats={};
+try{ stats=JSON.parse(localStorage.getItem(KEY)||"{}")||{}; }catch(e){ stats={}; }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(stats)); }catch(e){} }
+function bump(t,ok){ if(!stats[t]) stats[t]={c:0,t:0}; stats[t].t++; if(ok) stats[t].c++; save(); paintTotals(); }
+function paintTotals(){
+  var c=0,t=0; for(var k in stats){ c+=stats[k].c; t+=stats[k].t; }
+  $("#pnum").textContent=c+" correct of "+t;
+  $("#pbar-fill").style.width=(t?Math.round(c/t*100):0)+"%";
+}
+
+/* ---------- number helpers ---------- */
+function parseNum(s){
+  s=String(s==null?"":s).trim().replace(/,/g,"").replace(/sqrt/gi,"√").replace(/\s+/g,"").replace(/pi/gi,"π");
+  var m=/^(-?\d*\.?\d*)√(\d+\.?\d*)$/.exec(s);
+  if(m){ var a=(m[1]===""||m[1]==="-")?m[1]+"1":m[1]; return parseFloat(a)*Math.sqrt(parseFloat(m[2])); }
+  var p=/^(-?\d*\.?\d*)π$/.exec(s);
+  if(p){ var b=(p[1]===""||p[1]==="-")?p[1]+"1":p[1]; return parseFloat(b)*PI; }
+  var f=/^(-?\d+\.?\d*)\/(-?\d+\.?\d*)$/.exec(s);
+  if(f) return parseFloat(f[1])/parseFloat(f[2]);
+  var v=parseFloat(s); return isNaN(v)?NaN:v;
+}
+function nearly(a,b){ if(!isFinite(a)||!isFinite(b)) return false; if(Math.abs(b)<1e-9) return Math.abs(a)<1e-6; return Math.abs(a-b)<=Math.max(Math.abs(b)*0.012,0.005)+1e-9; }
+function r2(x){ return Math.round(x*100)/100; }
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ var t=b; b=a%b; a=t; } return a||1; }
+function frac(n,d){ var g=gcd(n,d); n/=g; d/=g; if(d<0){ n=-n; d=-d; } return d===1? String(n) : n+"/"+d; }
+function sig(x){ var v=Math.round(x*1000)/1000; return String(v); }
+
+/* ---------- figures ---------- */
+function transversalSVG(hi){
+  hi=hi||[];
+  var P={1:[112,56],2:[152,50],3:[110,92],4:[152,88],5:[186,136],6:[228,130],7:[184,172],8:[226,168]};
+  var s='<svg viewBox="0 0 320 220" role="img" aria-label="Two parallel lines cut by a transversal, angles numbered one to eight">';
+  s+='<path class="svg-line" d="M18 70 H302"/><path class="svg-line" d="M18 150 H302"/>';
+  s+='<path class="svg-draw" d="M80 15 L260 205"/>';
+  s+='<circle class="svg-dot" cx="132" cy="70" r="3.2"/><circle class="svg-dot" cx="208" cy="150" r="3.2"/>';
+  s+='<text class="svg-mut" x="24" y="64">l</text><text class="svg-mut" x="24" y="144">m</text><text class="svg-mut" x="266" y="205">t</text>';
+  for(var k=1;k<=8;k++){
+    var on=hi.indexOf(k)>=0;
+    if(on) s+='<circle class="hi-ring" cx="'+(P[k][0]+4)+'" cy="'+(P[k][1]-4)+'" r="12"/>';
+    s+='<text class="'+(on?"svg-hi":"svg-txt")+'" x="'+P[k][0]+'" y="'+P[k][1]+'">'+k+'</text>';
+  }
+  return s+'</svg>';
+}
+function trianglePairSVG(marks){
+  marks=marks||{};
+  function tri(ox){
+    var A=[ox+10,110], B=[ox+95,110], C=[ox+62,32];
+    var g='<path class="svg-line" d="M'+A[0]+' '+A[1]+' L'+B[0]+' '+B[1]+' L'+C[0]+' '+C[1]+' Z"/>';
+    function ticks(p,q,n,cls){
+      var mx=(p[0]+q[0])/2, my=(p[1]+q[1])/2, dx=q[0]-p[0], dy=q[1]-p[1], L=Math.sqrt(dx*dx+dy*dy);
+      var nx=-dy/L*5, ny=dx/L*5, tx=dx/L*3.4, ty=dy/L*3.4, out="";
+      for(var i=0;i<n;i++){ var o=(i-(n-1)/2)*4.4, cx=mx+dx/L*o, cy=my+dy/L*o;
+        out+='<path class="'+cls+'" d="M'+(cx-nx)+' '+(cy-ny)+' L'+(cx+nx)+' '+(cy+ny)+'"/>'; }
+      return out;
+    }
+    function arc(v,p,q,cls){
+      function u(a,b){ var dx=b[0]-a[0], dy=b[1]-a[1], L=Math.sqrt(dx*dx+dy*dy); return [dx/L,dy/L]; }
+      var u1=u(v,p), u2=u(v,q), R=17;
+      var sweep=(u1[0]*u2[1]-u1[1]*u2[0])>0?1:0;
+      return '<path class="'+cls+'" d="M'+(v[0]+u1[0]*R)+' '+(v[1]+u1[1]*R)+' A'+R+' '+R+' 0 0 '+sweep+' '+(v[0]+u2[0]*R)+' '+(v[1]+u2[1]*R)+'"/>';
+    }
+    if(marks.AB) g+=ticks(A,B,marks.AB,"svg-draw");
+    if(marks.BC) g+=ticks(B,C,marks.BC,"svg-draw");
+    if(marks.AC) g+=ticks(A,C,marks.AC,"svg-draw");
+    if(marks.angA) g+=arc(A,B,C,"svg-draw");
+    if(marks.angB) g+=arc(B,C,A,"svg-draw");
+    if(marks.angC) g+=arc(C,A,B,"svg-draw");
+    if(marks.rightC) g+='<path class="svg-draw" d="M'+(C[0]-9)+' '+(C[1]+7)+' l6 8 l8 -6"/>';
+    g+='<text class="svg-mut" x="'+(A[0]-11)+'" y="'+(A[1]+14)+'">'+(ox<150?"A":"D")+'</text>';
+    g+='<text class="svg-mut" x="'+(B[0]+4)+'" y="'+(B[1]+14)+'">'+(ox<150?"B":"E")+'</text>';
+    g+='<text class="svg-mut" x="'+(C[0]-4)+'" y="'+(C[1]-8)+'">'+(ox<150?"C":"F")+'</text>';
+    return g;
+  }
+  return '<svg viewBox="0 0 320 130" role="img" aria-label="Two triangles with matching marks">'+tri(15)+tri(185)+'</svg>';
+}
+function rightSVG(a,b){
+  var W=300,H=170, pad=34;
+  var sc=Math.min((W-2*pad)/Math.max(a,0.1),(H-2*pad)/Math.max(b,0.1));
+  var la=a*sc, lb=b*sc;
+  var x0=pad, y0=H-pad;
+  var c=Math.sqrt(a*a+b*b);
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Right triangle with legs '+a+' and '+b+'">';
+  s+='<path class="svg-fill" d="M'+x0+' '+y0+' L'+(x0+la)+' '+y0+' L'+x0+' '+(y0-lb)+' Z"/>';
+  s+='<path class="svg-line" d="M'+(x0+2)+' '+(y0-14)+' h12 v12"/>';
+  s+='<text class="svg-txt" x="'+(x0+la/2-8)+'" y="'+(y0+18)+'">a='+r2(a)+'</text>';
+  s+='<text class="svg-txt" x="'+(x0-26)+'" y="'+(y0-lb/2)+'">b='+r2(b)+'</text>';
+  s+='<text class="svg-hi" x="'+(x0+la/2+2)+'" y="'+(y0-lb/2-6)+'">c='+r2(c)+'</text>';
+  return s+'</svg>';
+}
+function similarSVG(){
+  return '<svg viewBox="0 0 320 140" role="img" aria-label="A small triangle and a larger similar triangle">'+
+  '<path class="svg-line" d="M20 110 L100 110 L64 52 Z"/>'+
+  '<path class="svg-draw" d="M150 122 L300 122 L232 12 Z"/>'+
+  '<text class="svg-mut" x="52" y="128">&#9651;ABC</text><text class="svg-mut" x="204" y="138">&#9651;DEF</text>'+
+  '<text class="svg-txt" x="108" y="86">~</text></svg>';
+}
+function circleSVG(){
+  var cx=160, cy=95, r=66;
+  var a1=-140*PI/180, a2=-40*PI/180;
+  var A=[cx+r*Math.cos(a1), cy+r*Math.sin(a1)], B=[cx+r*Math.cos(a2), cy+r*Math.sin(a2)];
+  var Pp=[cx+r*Math.cos(100*PI/180), cy+r*Math.sin(100*PI/180)];
+  var s='<svg viewBox="0 0 320 190" role="img" aria-label="A circle showing a central angle and an inscribed angle on the same arc">';
+  s+='<circle class="svg-line" cx="'+cx+'" cy="'+cy+'" r="'+r+'"/>';
+  s+='<path class="svg-fill" d="M'+cx+' '+cy+' L'+A[0]+' '+A[1]+' A'+r+' '+r+' 0 0 1 '+B[0]+' '+B[1]+' Z"/>';
+  s+='<path class="svg-thin" d="M'+Pp[0]+' '+Pp[1]+' L'+A[0]+' '+A[1]+' M'+Pp[0]+' '+Pp[1]+' L'+B[0]+' '+B[1]+'"/>';
+  s+='<circle class="svg-dot" cx="'+cx+'" cy="'+cy+'" r="3"/>';
+  s+='<text class="svg-mut" x="'+(cx+6)+'" y="'+(cy+14)+'">O</text>';
+  s+='<text class="svg-hi" x="'+(cx-16)+'" y="'+(cy-16)+'">central</text>';
+  s+='<text class="svg-mut" x="'+(Pp[0]-30)+'" y="'+(Pp[1]+18)+'">inscribed</text>';
+  s+='<text class="svg-mut" x="'+(A[0]-16)+'" y="'+(A[1]-6)+'">A</text><text class="svg-mut" x="'+(B[0]+4)+'" y="'+(B[1]-6)+'">B</text>';
+  return s+'</svg>';
+}
+function gridSVG(p1,p2){
+  var W=300,H=200, step=18, ox=W/2, oy=H/2;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Two points plotted on a coordinate grid">';
+  for(var x=ox%step;x<W;x+=step) s+='<path class="svg-thin" d="M'+x+' 0 V'+H+'"/>';
+  for(var y=oy%step;y<H;y+=step) s+='<path class="svg-thin" d="M0 '+y+' H'+W+'"/>';
+  s+='<path class="svg-line" d="M0 '+oy+' H'+W+' M'+ox+' 0 V'+H+'"/>';
+  function px(p){ return [ox+p[0]*step, oy-p[1]*step]; }
+  var A=px(p1), B=px(p2);
+  s+='<path class="svg-draw" d="M'+A[0]+' '+A[1]+' L'+B[0]+' '+B[1]+'"/>';
+  s+='<circle class="svg-dot" cx="'+A[0]+'" cy="'+A[1]+'" r="4"/><circle class="svg-dot" cx="'+B[0]+'" cy="'+B[1]+'" r="4"/>';
+  s+='<text class="svg-txt" x="'+(A[0]+7)+'" y="'+(A[1]-7)+'">('+p1[0]+", "+p1[1]+')</text>';
+  s+='<text class="svg-txt" x="'+(B[0]+7)+'" y="'+(B[1]-7)+'">('+p2[0]+", "+p2[1]+')</text>';
+  return s+'</svg>';
+}
+
+/* ---------- angle-pair table ---------- */
+var REL={};
+function setRel(pairs,name,cong){ pairs.forEach(function(p){ REL[p[0]+"-"+p[1]]={name:name,cong:cong}; REL[p[1]+"-"+p[0]]={name:name,cong:cong}; }); }
+setRel([[1,4],[2,3],[5,8],[6,7]],"vertical angles",1);
+setRel([[1,5],[2,6],[3,7],[4,8]],"corresponding angles",1);
+setRel([[3,6],[4,5]],"alternate interior angles",1);
+setRel([[1,8],[2,7]],"alternate exterior angles",1);
+setRel([[3,5],[4,6]],"same-side interior angles",0);
+setRel([[1,7],[2,8]],"same-side exterior angles",0);
+setRel([[1,2],[3,4],[1,3],[2,4],[5,6],[7,8],[5,7],[6,8]],"a linear pair",0);
+var REL_NAMES=["vertical angles","corresponding angles","alternate interior angles","alternate exterior angles","same-side interior angles","same-side exterior angles","a linear pair"];
+var GROUP_A=[1,4,5,8];
+function relOf(i,j){ return REL[i+"-"+j] || {name:(GROUP_A.indexOf(i)>=0)===(GROUP_A.indexOf(j)>=0)?"congruent angles":"supplementary angles", cong:(GROUP_A.indexOf(i)>=0)===(GROUP_A.indexOf(j)>=0)?1:0}; }
+
+/* ---------- congruence cases ---------- */
+var CONG=[
+ {m:{AB:1,BC:2,AC:3},ans:"SSS",why:"All three pairs of sides are marked congruent, so the triangles are rigid copies of each other."},
+ {m:{AB:1,angB:1,BC:2},ans:"SAS",why:"Two sides are marked, and the marked angle B sits between them — an included angle, which is what SAS requires."},
+ {m:{angA:1,AB:1,angB:1},ans:"ASA",why:"Two angles are marked with the side between them, which is ASA."},
+ {m:{angA:1,angB:1,BC:1},ans:"AAS",why:"Two angles are marked, but side BC is outside them, so this is AAS rather than ASA."},
+ {m:{rightC:1,AB:1,BC:2},ans:"HL",why:"There is a right angle, and the marked parts are the hypotenuse AB plus a leg — HL, which only exists for right triangles."},
+ {m:{AB:1,BC:2,angA:1},ans:"none of these",why:"Two sides and an angle that is not between them is SSA, the swinging-door case. It can produce two different triangles, so it proves nothing."},
+ {m:{angA:1,angB:1,angC:1},ans:"none of these",why:"Three angles is AAA. It guarantees the same shape, but the triangles could be any size, so it only proves similarity."}
+];
+var CONG_CHOICES=["SSS","SAS","ASA","AAS","HL","none of these"];
+
+/* ---------- generators ---------- */
+var G={};
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function modeOf(opt,all){ var m=(opt&&opt.modes&&opt.modes.length)?opt.modes:all; return rnd(m); }
+function withDistractors(correct,pool,n){
+  var out=[correct], guard=0;
+  while(out.length<n && guard++<400){ var c=rnd(pool); if(out.indexOf(c)<0) out.push(c); }
+  return shuffle(out);
+}
+function bar(t){ return '<span style="border-top:1.5px solid currentColor; padding-top:1px">'+t+'</span>'; }
+
+var NOTATION=[
+ ["segment","the segment from A to B","AB with a bar over it", bar("AB")],
+ ["ray","the ray starting at A and going through B","AB with a one-way arrow over it", bar("AB")+"&#8594;"],
+ ["line","the line through A and B","AB with a two-way arrow over it", bar("AB")+"&#8596;"],
+ ["length","the distance from A to B","AB with nothing over it", "AB"]
+];
+var VOCAB=[
+ ["collinear","points that all lie on one straight line"],
+ ["coplanar","points that all lie in one flat plane"],
+ ["midpoint","the point that divides a segment into two equal halves"],
+ ["angle bisector","a ray that splits an angle into two equal angles"],
+ ["vertex","the corner point where two sides or rays meet"],
+ ["ray","a piece of a line with one endpoint that goes forever the other way"],
+ ["segment","a piece of a line with an endpoint at each end"],
+ ["perpendicular","two lines that meet at exactly 90 degrees"],
+ ["parallel","two lines in the same plane that never meet"],
+ ["congruent","the same size and the same shape"]
+];
+
+G.basics=function(opt){
+  opt=opt||{};
+  var mode=modeOf(opt,["notation","vocab","segadd"]);
+  if(mode==="notation"){
+    var n=rnd(NOTATION);
+    return {kind:"mc", prompt:"How do you write <b>"+n[1]+"</b>?",
+      choices:withDistractors(n[2],NOTATION.map(function(x){return x[2]}).filter(function(x){return x!==n[2]}),4),
+      correct:n[2], answer:n[2],
+      steps:["The "+n[0]+" from A to B is written "+n[3]+".",
+             "A bar means a segment, which has two endpoints. An arrow means it keeps going in that direction. No mark at all means the number you would measure — a length."]};
+  }
+  if(mode==="vocab"){
+    var v=rnd(VOCAB);
+    return {kind:"mc", prompt:"Which word means <b>"+v[1]+"</b>?",
+      choices:withDistractors(v[0],VOCAB.map(function(x){return x[0]}).filter(function(x){return x!==v[0]}),4),
+      correct:v[0], answer:v[0],
+      steps:["A "+v[0]+" is "+v[1]+".","Geometry is unusually strict about vocabulary, because proofs later on have to cite these definitions by name."]};
+  }
+  var ab=ri(3,20), bc=ri(3,20), ac=ab+bc, ask=ri(1,2);
+  if(ask===1) return {kind:"text", prompt:"Point B lies between A and C. If AB = <b>"+ab+"</b> and BC = <b>"+bc+"</b>, find AC.",
+    unit:"units", placeholder:"length",
+    check:function(x){ return nearly(parseNum(x),ac); }, answer:String(ac),
+    steps:["When a point is between two others, the two short pieces add up to the whole: AB + BC = AC.",
+           ab+" + "+bc+" = "+ac+"."]};
+  return {kind:"text", prompt:"Point B lies between A and C. If AC = <b>"+ac+"</b> and AB = <b>"+ab+"</b>, find BC.",
+    unit:"units", placeholder:"length",
+    check:function(x){ return nearly(parseNum(x),bc); }, answer:String(bc),
+    steps:["AB + BC = AC, so BC = AC − AB.",
+           ac+" − "+ab+" = "+bc+"."]};
+};
+
+G.anglekinds=function(opt){
+  opt=opt||{};
+  var mode=modeOf(opt,["classify","comp","supp","vertical","linear"]);
+  if(mode==="classify"){
+    var m=rnd([ri(1,89),ri(91,179),90,180,ri(1,89),ri(91,179)]);
+    var ans = m<90?"acute" : m===90?"right" : m<180?"obtuse" : "straight";
+    return {kind:"mc", prompt:"An angle measures <b>"+m+"&deg;</b>. What kind of angle is it?",
+      choices:["acute","right","obtuse","straight"], correct:ans, answer:ans,
+      steps:["Under 90° is acute, exactly 90° is right, between 90° and 180° is obtuse, and exactly 180° is straight.",
+             m+"° is "+ans+"."]};
+  }
+  if(mode==="comp"||mode==="supp"){
+    var total=mode==="comp"?90:180, a=ri(10,total-10), b=total-a;
+    return {kind:"text", prompt:"Two angles are <b>"+(mode==="comp"?"complementary":"supplementary")+"</b>. One measures <b>"+a+"&deg;</b>. Find the other.",
+      unit:"degrees", placeholder:"degrees",
+      check:function(x){ return nearly(parseNum(x),b); }, answer:b+"°",
+      steps:[(mode==="comp"?"Complementary angles add to 90°.":"Supplementary angles add to 180°."),
+             total+" − "+a+" = "+b+"°.",
+             "Remember which is which: C comes before S, and 90 comes before 180."]};
+  }
+  if(mode==="vertical"){
+    var v=ri(15,165);
+    return {kind:"text", prompt:"&ang;1 and &ang;2 are <b>vertical angles</b>. If m&ang;1 = <b>"+v+"&deg;</b>, find m&ang;2.",
+      unit:"degrees", placeholder:"degrees",
+      check:function(x){ return nearly(parseNum(x),v); }, answer:v+"°",
+      steps:["Vertical angles sit across the X from each other where two lines cross.",
+             "They are always congruent, so m&ang;2 = "+v+"° too."]};
+  }
+  var p1=ri(20,160), p2=180-p1;
+  return {kind:"text", prompt:"&ang;A and &ang;B form a <b>linear pair</b>. If m&ang;A = <b>"+p1+"&deg;</b>, find m&ang;B.",
+    unit:"degrees", placeholder:"degrees",
+    check:function(x){ return nearly(parseNum(x),p2); }, answer:p2+"°",
+    steps:["A linear pair sits side by side and together forms a straight line.",
+           "A straight line is 180°, so 180 − "+p1+" = "+p2+"°."]};
+};
+
+G.trianglebasics=function(opt){
+  opt=opt||{};
+  var mode=modeOf(opt,["sum","byangle","byside"]);
+  if(mode==="sum"){
+    var a=ri(20,110), b=ri(20,150-a), c=180-a-b;
+    return {kind:"text", prompt:"Two angles of a triangle measure <b>"+a+"&deg;</b> and <b>"+b+"&deg;</b>. Find the third.",
+      unit:"degrees", placeholder:"degrees",
+      check:function(x){ return nearly(parseNum(x),c); }, answer:c+"°",
+      steps:["The three angles of any triangle always add to 180°.",
+             "180 − "+a+" − "+b+" = "+c+"°."]};
+  }
+  if(mode==="byangle"){
+    var kind=rnd(["acute","right","obtuse"]), A,B,C;
+    if(kind==="right"){ A=90; B=ri(20,70); C=90-B; }
+    else if(kind==="obtuse"){ A=ri(95,140); B=ri(15,180-A-15); C=180-A-B; }
+    else { A=ri(50,85); B=ri(50,85); C=180-A-B; if(C>=90||C<=0) { A=60;B=60;C=60; } }
+    return {kind:"mc", prompt:"A triangle has angles of <b>"+A+"&deg;, "+B+"&deg;, and "+C+"&deg;</b>. What kind of triangle is it?",
+      choices:["acute","right","obtuse"], correct:kind, answer:kind,
+      steps:["Look at the largest angle only.",
+             "All three under 90° is acute, exactly one 90° is right, and one over 90° is obtuse.",
+             "The largest here is "+Math.max(A,B,C)+"°, so it is "+kind+"."]};
+  }
+  var kind2=rnd(["scalene","isosceles","equilateral"]), x,y,z;
+  if(kind2==="equilateral"){ x=y=z=ri(3,15); }
+  else if(kind2==="isosceles"){ x=y=ri(5,15); z=ri(3,9); while(z===x) z=ri(3,9); }
+  else { x=ri(4,9); y=x+ri(1,4); z=y+ri(1,4); }
+  return {kind:"mc", prompt:"A triangle has sides of <b>"+x+", "+y+", and "+z+"</b>. What kind of triangle is it?",
+    choices:["scalene","isosceles","equilateral"], correct:kind2, answer:kind2,
+    steps:["Count how many sides are equal.",
+           "No equal sides is scalene, exactly two is isosceles, all three is equilateral.",
+           "Here it is "+kind2+"."]};
+};
+
+G.angles=function(opt){
+  opt=opt||{};
+  var mode=modeOf(opt,["rel","measure","algebra"]);
+  function pickPair(named){
+    var i,j,g=0;
+    do{ i=ri(1,8); j=ri(1,8); g++; } while((j===i || (named && !REL[i+"-"+j])) && g<300);
+    return [i,j];
+  }
+  if(mode==="rel"){
+    var pr=pickPair(true), i=pr[0], j=pr[1], rel=relOf(i,j);
+    return {kind:"mc", fig:transversalSVG([i,j]),
+      prompt:"Lines l and m are parallel. What is the relationship between <b>&ang;"+i+"</b> and <b>&ang;"+j+"</b>?",
+      choices:withDistractors(rel.name,REL_NAMES.filter(function(n){return n!==rel.name}),4),
+      correct:rel.name, answer:rel.name,
+      steps:["&ang;"+i+" and &ang;"+j+" are "+rel.name+".",
+             rel.cong?"That pair is congruent — equal measures.":"That pair is supplementary — the two measures add to 180°."]};
+  }
+  if(mode==="measure"){
+    var pr2=pickPair(false), a=pr2[0], b=pr2[1], r2r=relOf(a,b), v=ri(25,155);
+    var target=r2r.cong? v : 180-v;
+    return {kind:"text", fig:transversalSVG([a,b]),
+      prompt:"Lines l and m are parallel and <b>m&ang;"+a+" = "+v+"&deg;</b>. Find <b>m&ang;"+b+"</b>.",
+      unit:"degrees", placeholder:"degrees",
+      check:function(x){ return nearly(parseNum(x),target); }, answer:target+"°",
+      steps:["&ang;"+a+" and &ang;"+b+" are "+r2r.name+".",
+             r2r.cong? "Congruent, so the measure carries straight across." : "Supplementary, so subtract: 180 − "+v+".",
+             "m&ang;"+b+" = "+target+"°."]};
+  }
+  var co=ri(3,9), cn=ri(20,70), val=co*ri(4,12)+cn, x2=Math.round((val-cn)/co);
+  var pr3=pickPair(false), kk=pr3[0], ll=pr3[1], rr=relOf(kk,ll);
+  var other=rr.cong? val : 180-val;
+  return {kind:"text", fig:transversalSVG([kk,ll]),
+    prompt:"Lines l and m are parallel. m&ang;"+kk+" = <b>("+co+"x + "+cn+")&deg;</b> and m&ang;"+ll+" = <b>"+other+"&deg;</b>. Solve for x.",
+    unit:"x =", placeholder:"value of x",
+    check:function(v3){ return nearly(parseNum(v3),x2); }, answer:"x = "+x2,
+    steps:["&ang;"+kk+" and &ang;"+ll+" are "+rr.name+", so "+(rr.cong?"set the two expressions equal":"make the two expressions add to 180")+".",
+           rr.cong? (co+"x + "+cn+" = "+other) : (co+"x + "+cn+" + "+other+" = 180"),
+           co+"x = "+(val-cn)+", so x = "+x2+"."]};
+};
+
+G.congruence=function(opt){
+  opt=opt||{};
+  var pool=CONG;
+  if(opt.subset) pool=CONG.filter(function(c){ return opt.subset.indexOf(c.ans)>=0; });
+  var c=rnd(pool);
+  return {kind:"mc", fig:trianglePairSVG(c.m),
+    prompt:"Matching marks show which parts are congruent. <b>Which postulate proves the two triangles congruent?</b>",
+    choices:CONG_CHOICES.slice(), correct:c.ans, answer:c.ans,
+    steps:[c.why,"Read the marks in order around the triangle: an angle between two marked sides is SAS, a side between two marked angles is ASA."]};
+};
+
+G.right=function(opt){
+  opt=opt||{};
+  var mode=modeOf(opt,["hyp","leg","sp45","sp30"]);
+  if(mode==="hyp"){
+    var t=rnd([[3,4,5],[5,12,13],[8,15,17],[7,24,25],[9,12,15],[6,8,10],[20,21,29]]), k=rnd([1,1,2,3]);
+    var a=t[0]*k, b=t[1]*k, c=t[2]*k;
+    return {kind:"text", fig:rightSVG(a,b),
+      prompt:"The legs of a right triangle are <b>"+a+"</b> and <b>"+b+"</b>. Find the hypotenuse.",
+      unit:"units", placeholder:"length of c",
+      check:function(v){ return nearly(parseNum(v),c); }, answer:String(c),
+      steps:["a² + b² = c², and c is always the side across from the right angle.",
+             a+"² + "+b+"² = "+(a*a)+" + "+(b*b)+" = "+(a*a+b*b)+".",
+             "c = √"+(a*a+b*b)+" = "+c+"."]};
+  }
+  if(mode==="leg"){
+    var t2=rnd([[3,4,5],[5,12,13],[8,15,17],[7,24,25],[6,8,10],[9,40,41]]);
+    return {kind:"text",
+      prompt:"A right triangle has a hypotenuse of <b>"+t2[2]+"</b> and one leg of <b>"+t2[1]+"</b>. Find the other leg.",
+      unit:"units", placeholder:"length of the leg",
+      check:function(v){ return nearly(parseNum(v),t2[0]); }, answer:String(t2[0]),
+      steps:["The hypotenuse is given, so this is a subtraction: a² = c² − b².",
+             "a² = "+t2[2]+"² − "+t2[1]+"² = "+(t2[2]*t2[2])+" − "+(t2[1]*t2[1])+" = "+(t2[2]*t2[2]-t2[1]*t2[1])+".",
+             "a = √"+(t2[2]*t2[2]-t2[1]*t2[1])+" = "+t2[0]+"."]};
+  }
+  if(mode==="sp45"){
+    var L=ri(2,14), hy=L*Math.SQRT2;
+    return {kind:"text", prompt:"In a <b>45&deg;-45&deg;-90&deg;</b> triangle each leg measures <b>"+L+"</b>. Find the hypotenuse.",
+      unit:"units", placeholder:"exact or decimal",
+      check:function(v){ return nearly(parseNum(v),hy); }, answer:L+"√2 ≈ "+r2(hy),
+      steps:["A 45-45-90 triangle is x, x, x√2.",
+             "Hypotenuse = "+L+"√2, about "+r2(hy)+".",
+             "You can type it either way — 5sqrt2 or 7.07 both count."]};
+  }
+  var sh=ri(2,12), ask=ri(1,2), lng=sh*Math.sqrt(3), hyp2=2*sh;
+  if(ask===1) return {kind:"text", prompt:"In a <b>30&deg;-60&deg;-90&deg;</b> triangle the short leg is <b>"+sh+"</b>. Find the longer leg.",
+    unit:"units", placeholder:"exact or decimal",
+    check:function(v){ return nearly(parseNum(v),lng); }, answer:sh+"√3 ≈ "+r2(lng),
+    steps:["A 30-60-90 triangle is x, x√3, 2x, where x is the short leg across from the 30° angle.",
+           "Longer leg = "+sh+"√3 ≈ "+r2(lng)+"."]};
+  return {kind:"text", prompt:"In a <b>30&deg;-60&deg;-90&deg;</b> triangle the short leg is <b>"+sh+"</b>. Find the hypotenuse.",
+    unit:"units", placeholder:"length",
+    check:function(v){ return nearly(parseNum(v),hyp2); }, answer:String(hyp2),
+    steps:["The hypotenuse of a 30-60-90 is exactly twice the short leg.",
+           "2 × "+sh+" = "+hyp2+"."]};
+};
+
+G.similar=function(opt){
+  opt=opt||{};
+  var mode=modeOf(opt,["side","area","perim"]);
+  if(mode==="side"){
+    var k=rnd([2,3,1.5,2.5,4]), a=ri(3,12), b=ri(4,15), a2=r2(a*k), b2=r2(b*k);
+    return {kind:"text", fig:similarSVG(),
+      prompt:"&#9651;ABC ~ &#9651;DEF. AB = <b>"+a+"</b>, DE = <b>"+a2+"</b>, and BC = <b>"+b+"</b>. Find EF.",
+      unit:"units", placeholder:"length of EF",
+      check:function(v){ return nearly(parseNum(v),b2); }, answer:String(b2),
+      steps:["Matching sides give the scale factor: k = DE/AB = "+a2+"/"+a+" = "+k+".",
+             "Every length in the big triangle is "+k+" times the small one.",
+             "EF = "+b+" × "+k+" = "+b2+"."]};
+  }
+  if(mode==="area"){
+    var A1=ri(4,30), k2=rnd([2,3,4,5]), A2=A1*k2*k2;
+    return {kind:"text",
+      prompt:"Two similar figures have a scale factor of <b>"+k2+"</b>. The smaller has an area of <b>"+A1+" cm&sup2;</b>. Find the larger area.",
+      unit:"cm²", placeholder:"area",
+      check:function(v){ return nearly(parseNum(v),A2); }, answer:A2+" cm²",
+      steps:["Lengths scale by k, but area scales by k² — area is two dimensions.",
+             "k² = "+k2+"² = "+(k2*k2)+".",
+             A1+" × "+(k2*k2)+" = "+A2+" cm²."]};
+  }
+  var s1=ri(2,9), s2=s1*rnd([2,3]), p1=ri(10,40), p2=p1*(s2/s1);
+  return {kind:"text",
+    prompt:"Two similar polygons have matching sides of <b>"+s1+"</b> and <b>"+s2+"</b>. The smaller has a perimeter of <b>"+p1+"</b>. Find the larger perimeter.",
+    unit:"units", placeholder:"perimeter",
+    check:function(v){ return nearly(parseNum(v),p2); }, answer:String(p2),
+    steps:["k = "+s2+"/"+s1+" = "+(s2/s1)+".",
+           "Perimeter is a length, so it scales by k — not k², which is the area rule.",
+           p1+" × "+(s2/s1)+" = "+p2+"."]};
+};
+
+G.circles=function(opt){
+  opt=opt||{};
+  var mode=modeOf(opt,["inscribed","arc2ang","arclen","sector","tangent"]);
+  if(mode==="inscribed"){
+    var arc=ri(20,85)*2, ins=arc/2;
+    return {kind:"text", fig:circleSVG(),
+      prompt:"An inscribed angle intercepts an arc of <b>"+arc+"&deg;</b>. What is the measure of the angle?",
+      unit:"degrees", placeholder:"degrees",
+      check:function(v){ return nearly(parseNum(v),ins); }, answer:ins+"°",
+      steps:["An inscribed angle has its vertex on the circle, and it is always half of the arc it opens onto.",
+             arc+" ÷ 2 = "+ins+"°."]};
+  }
+  if(mode==="arc2ang"){
+    var ang=ri(20,80), arc2=ang*2;
+    return {kind:"text",
+      prompt:"An inscribed angle measures <b>"+ang+"&deg;</b>. Find the arc it intercepts.",
+      unit:"degrees", placeholder:"degrees",
+      check:function(v){ return nearly(parseNum(v),arc2); }, answer:arc2+"°",
+      steps:["The angle is half the arc, so the arc is twice the angle.",
+             "2 × "+ang+" = "+arc2+"°.",
+             "A central angle, with its vertex at the middle, would equal the arc instead."]};
+  }
+  if(mode==="arclen"){
+    var r=ri(3,15), th=rnd([30,45,60,90,120,135,150,180]), len=(th/360)*2*PI*r;
+    return {kind:"text",
+      prompt:"A circle has radius <b>"+r+"</b>. Find the length of an arc with a central angle of <b>"+th+"&deg;</b>. Use &pi; &asymp; 3.14.",
+      unit:"units", placeholder:"arc length",
+      check:function(v){ return nearly(parseNum(v),len); }, answer:r2(len)+" units",
+      steps:["An arc is just a fraction of the way around: (θ/360) × 2πr.",
+             "The whole circumference is 2π("+r+") ≈ "+r2(2*PI*r)+", and you want "+th+"/360 of it.",
+             "≈ "+r2(len)+"."]};
+  }
+  if(mode==="sector"){
+    var r3=ri(3,14), th3=rnd([30,45,60,90,120,180]), ar=(th3/360)*PI*r3*r3;
+    return {kind:"text",
+      prompt:"Find the area of a sector with radius <b>"+r3+"</b> and central angle <b>"+th3+"&deg;</b>. Use &pi; &asymp; 3.14.",
+      unit:"square units", placeholder:"sector area",
+      check:function(v){ return nearly(parseNum(v),ar); }, answer:r2(ar)+" square units",
+      steps:["A sector is a slice of pie: (θ/360) × πr².",
+             "The whole circle is π("+r3+")² ≈ "+r2(PI*r3*r3)+".",
+             "Take "+th3+"/360 of that: ≈ "+r2(ar)+"."]};
+  }
+  var t=rnd([[3,4,5],[5,12,13],[8,15,17],[6,8,10]]);
+  return {kind:"text",
+    prompt:"A tangent touches a circle of radius <b>"+t[0]+"</b>. The tangent segment from an outside point P is <b>"+t[1]+"</b>. How far is P from the centre?",
+    unit:"units", placeholder:"distance",
+    check:function(v){ return nearly(parseNum(v),t[2]); }, answer:String(t[2]),
+    steps:["A tangent meets the radius at exactly 90°, so you have a right triangle.",
+           "The radius and the tangent are the legs; the distance to the centre is the hypotenuse.",
+           t[0]+"² + "+t[1]+"² = "+(t[0]*t[0]+t[1]*t[1])+", so the distance is "+t[2]+"."]};
+};
+
+G.coords=function(opt){
+  opt=opt||{};
+  var mode=modeOf(opt,["dist","mid","slope"]);
+  var p1=[ri(-5,5),ri(-5,5)], p2=[ri(-5,5),ri(-5,5)];
+  while(p2[0]===p1[0]&&p2[1]===p1[1]) p2=[ri(-5,5),ri(-5,5)];
+  var dx=p2[0]-p1[0], dy=p2[1]-p1[1];
+  if(mode==="dist"){
+    var d=Math.sqrt(dx*dx+dy*dy);
+    return {kind:"text", fig:gridSVG(p1,p2),
+      prompt:"Find the distance between <b>("+p1.join(", ")+")</b> and <b>("+p2.join(", ")+")</b>.",
+      unit:"units", placeholder:"distance",
+      check:function(v){ return nearly(parseNum(v),d); }, answer:(Number.isInteger(d)?String(d):"√"+(dx*dx+dy*dy)+" ≈ "+r2(d)),
+      steps:["Δx = "+p2[0]+" − ("+p1[0]+") = "+dx+", and Δy = "+p2[1]+" − ("+p1[1]+") = "+dy+".",
+             "Those two are the legs of a right triangle, so d = √("+dx+"² + "+dy+"²) = √"+(dx*dx+dy*dy)+".",
+             "≈ "+r2(d)+"."]};
+  }
+  if(mode==="mid"){
+    var mx=(p1[0]+p2[0])/2, my=(p1[1]+p2[1])/2;
+    return {kind:"point", fig:gridSVG(p1,p2),
+      prompt:"Find the midpoint of the segment joining <b>("+p1.join(", ")+")</b> and <b>("+p2.join(", ")+")</b>.",
+      check:function(v){ var n=String(v).replace(/[()\s]/g,"").split(","); if(n.length!==2) return false;
+        return nearly(parseNum(n[0]),mx) && nearly(parseNum(n[1]),my); },
+      answer:"("+mx+", "+my+")",
+      steps:["Average the x-values: ("+p1[0]+" + "+p2[0]+")/2 = "+mx+".",
+             "Average the y-values: ("+p1[1]+" + "+p2[1]+")/2 = "+my+".",
+             "The answer is a point, not a single number: ("+mx+", "+my+")."]};
+  }
+  if(dx===0){ p2[0]=p1[0]+ri(1,4); dx=p2[0]-p1[0]; }
+  var m=dy/dx;
+  return {kind:"text", fig:gridSVG(p1,p2),
+    prompt:"Find the slope of the line through <b>("+p1.join(", ")+")</b> and <b>("+p2.join(", ")+")</b>.",
+    unit:"slope", placeholder:"e.g. 3/4 or 0.75",
+    check:function(v){ return nearly(parseNum(v),m); },
+    answer:frac(dy,dx)+(Number.isInteger(m)?"":" ≈ "+r2(m)),
+    steps:["Slope is rise over run: (y₂ − y₁)/(x₂ − x₁).",
+           "("+p2[1]+" − "+p1[1]+")/("+p2[0]+" − "+p1[0]+") = "+dy+"/"+dx+".",
+           Number.isInteger(m)? "That reduces to "+m+"." : "Reduced, that is "+frac(dy,dx)+", or about "+r2(m)+"."]};
+};
+
+G.solids=function(opt){
+  opt=opt||{};
+  var mode=modeOf(opt,["tri","trap","circle","cyl","sphere","poly"]);
+  if(mode==="tri"){
+    var b=ri(4,20), h=ri(3,16), A=0.5*b*h;
+    return {kind:"text", prompt:"Find the area of a triangle with base <b>"+b+"</b> and height <b>"+h+"</b>.",
+      unit:"square units", placeholder:"area",
+      check:function(v){ return nearly(parseNum(v),A); }, answer:String(A),
+      steps:["A = ½bh — a triangle is exactly half of the rectangle around it.",
+             "½ × "+b+" × "+h+" = "+A+"."]};
+  }
+  if(mode==="trap"){
+    var b1=ri(4,14), b2=ri(6,20), h2=ri(3,12), A2=0.5*(b1+b2)*h2;
+    return {kind:"text", prompt:"A trapezoid has parallel sides of <b>"+b1+"</b> and <b>"+b2+"</b> and a height of <b>"+h2+"</b>. Find its area.",
+      unit:"square units", placeholder:"area",
+      check:function(v){ return nearly(parseNum(v),A2); }, answer:String(A2),
+      steps:["A = ½(b₁ + b₂)h — average the two parallel sides, then treat it like a rectangle.",
+             "½ × ("+b1+" + "+b2+") × "+h2+" = ½ × "+(b1+b2)+" × "+h2+".",
+             "= "+A2+"."]};
+  }
+  if(mode==="circle"){
+    var r=ri(2,12), A3=PI*r*r;
+    return {kind:"text", prompt:"Find the area of a circle with radius <b>"+r+"</b>. Use &pi; &asymp; 3.14.",
+      unit:"square units", placeholder:"area",
+      check:function(v){ return nearly(parseNum(v),A3); }, answer:r2(A3),
+      steps:["A = πr². Square the radius first, then multiply by π.",
+             "π × "+r+"² = π × "+(r*r)+" ≈ "+r2(A3)+".",
+             "If a problem gives the diameter, halve it before you start."]};
+  }
+  if(mode==="cyl"){
+    var r4=ri(2,9), h4=ri(3,15), V=PI*r4*r4*h4;
+    return {kind:"text", prompt:"Find the volume of a cylinder with radius <b>"+r4+"</b> and height <b>"+h4+"</b>. Use &pi; &asymp; 3.14.",
+      unit:"cubic units", placeholder:"volume",
+      check:function(v){ return nearly(parseNum(v),V); }, answer:r2(V),
+      steps:["V = πr²h — find the area of the circular base, then stack it up by the height.",
+             "Base ≈ "+r2(PI*r4*r4)+", times "+h4+".",
+             "≈ "+r2(V)+"."]};
+  }
+  if(mode==="sphere"){
+    var r5=ri(2,9), V5=(4/3)*PI*r5*r5*r5;
+    return {kind:"text", prompt:"Find the volume of a sphere with radius <b>"+r5+"</b>. Use &pi; &asymp; 3.14.",
+      unit:"cubic units", placeholder:"volume",
+      check:function(v){ return nearly(parseNum(v),V5); }, answer:r2(V5),
+      steps:["V = ⁴⁄₃πr³.","r³ = "+(r5*r5*r5)+".","⁴⁄₃ × π × "+(r5*r5*r5)+" ≈ "+r2(V5)+"."]};
+  }
+  var n=ri(3,12), sum=(n-2)*180;
+  return {kind:"text", prompt:"What is the sum of the interior angles of a polygon with <b>"+n+"</b> sides?",
+    unit:"degrees", placeholder:"degrees",
+    check:function(v){ return nearly(parseNum(v),sum); }, answer:sum+"°",
+    steps:["Any n-gon splits into n − 2 triangles, and each triangle carries 180°.",
+           "("+n+" − 2) × 180 = "+(n-2)+" × 180.",
+           "= "+sum+"°."]};
+};
+
+/* ---------- the 21-day path ---------- */
+var PLAN=[
+{t:"Points, lines, and how to write them", min:"8 min", goal:"Read and write the four basic pieces of every figure.",
+ teach:[["Geometry starts with three undefined things","A <b>point</b> is a position with no size, a <b>line</b> is straight and goes forever both ways, and a <b>plane</b> is a flat surface that goes forever. Nobody defines them &mdash; everything else is built from them."],
+ ["Segments and rays are pieces of a line","A <b>segment</b> has an endpoint at each end. A <b>ray</b> has one endpoint and goes forever the other way, like a beam from a flashlight."],
+ ["The mark on top tells you which one","A bar over AB means the segment. A one-way arrow means the ray. A two-way arrow means the whole line. Plain AB with no mark means a number &mdash; the length."]],
+ tip:"Order matters for rays only. Ray AB starts at A; ray BA starts at B. They are different rays.",
+ drill:{topic:"basics", opt:{modes:["notation","vocab"]}, target:6}},
+
+{t:"Measuring and classifying angles", min:"8 min", goal:"Put a name to any angle from its measure.",
+ teach:[["An angle is two rays from one point","That shared point is the <b>vertex</b>, and the amount of turn between the rays is measured in degrees."],
+ ["Four names cover everything","Under 90° is <b>acute</b>. Exactly 90° is <b>right</b>, marked with a little square. Between 90° and 180° is <b>obtuse</b>. Exactly 180° is <b>straight</b>."],
+ ["Naming an angle","&ang;B names the angle at vertex B. When several angles share a vertex, use three letters with the vertex in the middle: &ang;ABC."]],
+ tip:"Acute angles are small and sharp — think <i>a cute</i> little angle. Obtuse ones are the wide, blunt ones.",
+ drill:{topic:"anglekinds", opt:{modes:["classify"]}, target:6}},
+
+{t:"Complementary and supplementary", min:"8 min", goal:"Find a missing angle when two angles pair up.",
+ teach:[["Complementary angles add to 90°","If one is 37°, the other has to be 53°, because together they make a right angle."],
+ ["Supplementary angles add to 180°","If one is 112°, the other is 68°, because together they make a straight line."],
+ ["Subtract to find the missing one","There is nothing more to it: 90 minus what you have, or 180 minus what you have. The only real trap is using the wrong total."]],
+ tip:"C comes before S in the alphabet, and 90 comes before 180. Complementary is the smaller pair.",
+ drill:{topic:"anglekinds", opt:{modes:["comp","supp"]}, target:6}},
+
+{t:"Vertical angles and linear pairs", min:"8 min", goal:"Use two crossing lines to find every angle from just one.",
+ teach:[["Crossing lines make four angles","Two of them face each other across the crossing point, and two sit side by side."],
+ ["Vertical angles are congruent","The pair across from each other are always equal. This is true whether or not anything is parallel &mdash; it is the most reliable rule in the unit."],
+ ["A linear pair is supplementary","Two angles side by side along a straight line add to 180°. Between these two rules, one angle tells you all four."]],
+ tip:"Vertical here has nothing to do with up and down. It means the pair sharing only a vertex.",
+ drill:{topic:"anglekinds", opt:{modes:["vertical","linear"]}, target:5}},
+
+{t:"Parallel lines and a transversal", min:"10 min", goal:"Name the relationship between any two of the eight angles.",
+ teach:[["One line crossing two makes eight angles","The crossing line is the <b>transversal</b>. If the two lines it crosses are parallel, something remarkable happens: only two different sizes exist among all eight."],
+ ["Four names for the pairs","<b>Corresponding</b> angles sit in matching corners. <b>Alternate interior</b> are between the lines on opposite sides. <b>Alternate exterior</b> are outside on opposite sides. All three of those are congruent."],
+ ["Same-side pairs are supplementary","Angles between the lines on the <i>same</i> side add to 180° instead. So does any linear pair."]],
+ tip:"Shortcut for later: angles 1, 4, 5 and 8 are all equal, and so are 2, 3, 6 and 7. One from each group always adds to 180°.",
+ drill:{topic:"angles", opt:{modes:["rel"]}, target:5}},
+
+{t:"Finding angle measures", min:"9 min", goal:"Turn one known angle into any other angle in the figure.",
+ teach:[["Two questions, in order","First: what is the relationship? Second: does that relationship mean congruent or supplementary?"],
+ ["Congruent means copy the number","Corresponding, alternate interior, alternate exterior, and vertical pairs all just carry the measure straight across."],
+ ["Supplementary means subtract from 180","Same-side pairs and linear pairs need 180 minus the angle you were given."]],
+ tip:"Sanity check your answer against the picture. If the angle looks small and you wrote 130°, something is off.",
+ drill:{topic:"angles", opt:{modes:["measure"]}, target:5}},
+
+{t:"Solving for x", min:"10 min", goal:"Handle parallel-line problems written with algebra.",
+ teach:[["Same rules, now with a variable","When an angle is written as an expression like (3x + 20)°, the relationship gives you an equation instead of an answer."],
+ ["Congruent pairs give an equals sign","If the two angles are corresponding or alternate, set the expressions equal to each other."],
+ ["Supplementary pairs sum to 180","Add the two expressions, set the total to 180, then solve normally."]],
+ tip:"Solving for x is usually not the last step in class. Check whether the question wants x or the angle measure.",
+ drill:{topic:"angles", opt:{modes:["algebra"]}, target:4}},
+
+{t:"Triangles: the angle sum", min:"9 min", goal:"Find a missing angle, and classify a triangle two ways.",
+ teach:[["Every triangle totals 180°","Always, no exceptions, whatever the shape. Two angles given means the third is forced."],
+ ["Classify by angles","All three under 90° is <b>acute</b>. One right angle is a <b>right</b> triangle. One angle over 90° is <b>obtuse</b>. A triangle can only ever have one angle of 90° or more."],
+ ["Classify by sides","No equal sides is <b>scalene</b>, two equal is <b>isosceles</b>, three equal is <b>equilateral</b>. Equal sides sit across from equal angles &mdash; that link comes up constantly."]],
+ tip:"An equilateral triangle always has three 60° angles, because 180 ÷ 3 = 60.",
+ drill:{topic:"trianglebasics", opt:{}, target:6}},
+
+{t:"Congruent triangles: SSS and SAS", min:"10 min", goal:"Prove two triangles identical from three matching parts.",
+ teach:[["Congruent means identical","Same size, same shape. A triangle has six parts &mdash; three sides and three angles &mdash; but you never have to check all six."],
+ ["SSS: three pairs of sides","Fix all three side lengths and there is only one triangle you can build. Try it with three sticks: it will not flex."],
+ ["SAS: two sides and the angle between them","The angle must be <b>included</b> — sandwiched between the two marked sides. That word is the whole difference between a valid proof and a wrong one."]],
+ tip:"Tick marks on a figure show which parts match: one tick matches one tick, two match two.",
+ drill:{topic:"congruence", opt:{subset:["SSS","SAS"]}, target:5}},
+
+{t:"ASA, AAS, and HL", min:"10 min", goal:"Recognise the other three shortcuts.",
+ teach:[["ASA: two angles and the side between them","The side is included, exactly like the angle in SAS."],
+ ["AAS: two angles and a side outside them","Still valid, because two angles give you the third for free — so AAS is really ASA in disguise."],
+ ["HL: right triangles only","Hypotenuse plus one leg. It works only when the figure shows a right angle, which is why it has its own name."]],
+ tip:"Two triangles that share a side are congruent to themselves on that side — the Reflexive Property. It is very often the third fact you are missing.",
+ drill:{topic:"congruence", opt:{subset:["ASA","AAS","HL"]}, target:5}},
+
+{t:"What does not prove congruence", min:"9 min", goal:"Spot the two traps, and mix all five postulates together.",
+ teach:[["SSA proves nothing","Two sides and an angle that is <i>not</i> between them can swing shut into two completely different triangles. There is no SSA postulate."],
+ ["AAA proves nothing either","Three matching angles fix the shape but not the size. That is similarity, which you will meet on Day 15, not congruence."],
+ ["Mixed practice is the real test","Questions rarely announce which postulate applies. Read the marks, note whether the marked angle is between the marked sides, and only then choose."]],
+ tip:"Work around the triangle in order — side, angle, side — and read off what you actually see. Do not guess from the shape.",
+ drill:{topic:"congruence", opt:{}, target:5}},
+
+{t:"The Pythagorean theorem", min:"9 min", goal:"Find the hypotenuse of a right triangle.",
+ teach:[["It only works on right triangles","The rule is a² + b² = c², where a and b are the two legs and c is the hypotenuse."],
+ ["c is always across from the right angle","The hypotenuse is the longest side, and it never touches the right angle. Mislabelling it is the most common mistake in this unit."],
+ ["Square, add, square-root","3² + 4² = 9 + 16 = 25, and √25 = 5."]],
+ tip:"Learn these by heart: 3-4-5, 5-12-13, 8-15-17, 7-24-25. Multiples count too, so 6-8-10 is really 3-4-5 doubled.",
+ drill:{topic:"right", opt:{modes:["hyp"]}, target:5}},
+
+{t:"Finding a missing leg", min:"9 min", goal:"Work backwards when the hypotenuse is the side you know.",
+ teach:[["Same formula, rearranged","If you know c and one leg, then a² = c² − b². Subtraction, not addition."],
+ ["Check which side is the hypotenuse first","It is the one given as the longest, or the one across from the right angle. Everything depends on getting that right."],
+ ["An answer bigger than the hypotenuse is wrong","The hypotenuse is always the longest side, so if your leg came out longer, you added when you should have subtracted."]],
+ tip:"13² − 5² = 169 − 25 = 144, and √144 = 12. That is the 5-12-13 triangle again.",
+ drill:{topic:"right", opt:{modes:["leg"]}, target:5}},
+
+{t:"Special right triangles", min:"10 min", goal:"Get exact answers without the Pythagorean theorem.",
+ teach:[["45-45-90 is x, x, x√2","Both legs are equal, and the hypotenuse is a leg times √2. It is half of a square, cut corner to corner."],
+ ["30-60-90 is x, x√3, 2x","The short leg sits across from the 30° angle. The hypotenuse is exactly double it, and the longer leg is the short leg times √3."],
+ ["Match sides to angles","Biggest angle, longest side. That check tells you instantly whether you assigned the sides correctly."]],
+ tip:"You can type answers as 5sqrt2 or as 7.07 — both are accepted here.",
+ drill:{topic:"right", opt:{modes:["sp45","sp30"]}, target:5}},
+
+{t:"Similar figures and scale factor", min:"9 min", goal:"Find a missing side in a scaled copy.",
+ teach:[["Similar means same shape, different size","All matching angles are equal, and every side is multiplied by the same number."],
+ ["That number is the scale factor, k","k = new length ÷ old length. Find it from a pair of sides you know, then apply it to the side you want."],
+ ["AA is enough to prove it","Two pairs of equal angles proves two triangles similar. You never need to check a side."]],
+ tip:"Read the similarity statement in order: △ABC ~ △DEF means A pairs with D, so side AB pairs with side DE.",
+ drill:{topic:"similar", opt:{modes:["side"]}, target:5}},
+
+{t:"Perimeter and area ratios", min:"9 min", goal:"Scale up a perimeter, an area, and a volume correctly.",
+ teach:[["Perimeter scales by k","It is a length, so it grows at the same rate as the sides."],
+ ["Area scales by k²","Double every side and the area quadruples — area covers two dimensions, so the factor gets squared."],
+ ["Volume scales by k³","Same reasoning, one dimension further. Doubling the sides makes eight times the volume."]],
+ tip:"Given an area ratio and asked for the side ratio, square-root it. The two directions come up equally often.",
+ drill:{topic:"similar", opt:{modes:["area","perim"]}, target:5}},
+
+{t:"Distance on the coordinate plane", min:"9 min", goal:"Measure between two points using their coordinates.",
+ teach:[["It is the Pythagorean theorem again","The horizontal gap and the vertical gap are the legs of a right triangle, and the distance is the hypotenuse."],
+ ["The formula","d = √((x₂ − x₁)² + (y₂ − y₁)²). Subtract, square, add, square-root."],
+ ["Negatives take care of themselves","Squaring makes everything positive, so the order you subtract in does not change the answer."]],
+ tip:"Sketch the two points before calculating. The picture catches sign errors that the formula hides.",
+ drill:{topic:"coords", opt:{modes:["dist"]}, target:5}},
+
+{t:"Midpoint and slope", min:"10 min", goal:"Find the centre of a segment, and how steep it is.",
+ teach:[["Midpoint is an average","((x₁+x₂)/2, (y₁+y₂)/2). Average the x's, average the y's. The answer is a point, so write it in parentheses."],
+ ["Slope is rise over run","(y₂ − y₁)/(x₂ − x₁). Keep both subtractions in the same order or the sign flips."],
+ ["Slopes reveal shapes","Parallel lines have equal slopes. Perpendicular slopes are opposite reciprocals — 2/3 and −3/2 — and multiply to −1."]],
+ tip:"Horizontal lines have slope 0. Vertical lines have undefined slope, because the run is zero and you cannot divide by it.",
+ drill:{topic:"coords", opt:{modes:["mid","slope"]}, target:5}},
+
+{t:"Circles: central and inscribed angles", min:"9 min", goal:"Connect any angle in a circle to its arc.",
+ teach:[["Every circle rule is about the arc","An arc is measured in degrees, and the whole way around is 360°."],
+ ["A central angle equals its arc","Vertex at the centre. A 70° central angle cuts a 70° arc — the same number."],
+ ["An inscribed angle is half its arc","Vertex on the circle instead. The same arc gives every inscribed angle on it the same measure, and an angle inscribed in a semicircle is always 90°."]],
+ tip:"Where is the vertex? At the centre, the angle equals the arc. On the circle, halve it.",
+ drill:{topic:"circles", opt:{modes:["inscribed","arc2ang"]}, target:5}},
+
+{t:"Arc length and sector area", min:"9 min", goal:"Take a fraction of a circle.",
+ teach:[["Start with the whole circle","Circumference is 2πr and area is πr². Every arc and sector question begins with one of those two."],
+ ["Then take your slice","A θ° angle covers θ/360 of the circle. Arc length = (θ/360) × 2πr, and sector area = (θ/360) × πr²."],
+ ["Degrees stay out of the answer","Arc length comes out in units, sector area in square units. A leftover degree sign means the fraction was not applied."]],
+ tip:"90° is a quarter, 180° is a half, 120° is a third. Recognising the common fractions saves real time.",
+ drill:{topic:"circles", opt:{modes:["arclen","sector"]}, target:5}},
+
+{t:"Area and volume", min:"10 min", goal:"Use the formula sheet from memory.",
+ teach:[["Area formulas share one idea","A rectangle is bh. A triangle is half of that. A trapezoid averages its two parallel sides first, then behaves like a rectangle."],
+ ["Height means perpendicular height","Not the slanted side. In a trapezoid or parallelogram, the height is the straight-up distance between the parallel sides."],
+ ["Volume is base area times height","Prisms and cylinders are V = Bh. Pyramids and cones are exactly one third of that, and a sphere is ⁴⁄₃πr³."]],
+ tip:"Area is squared units, volume is cubed. Getting the units right often earns a mark on its own.",
+ drill:{topic:"solids", opt:{}, target:6}}
+];
+
+/* ---------- path progress ---------- */
+var PKEY="compassproof.path.v1";
+var PP={days:{}, all:false, last:null, streak:0};
+try{ var raw=JSON.parse(localStorage.getItem(PKEY)||"{}"); for(var kk in raw) PP[kk]=raw[kk]; }catch(e){}
+function psave(){ try{ localStorage.setItem(PKEY,JSON.stringify(PP)); }catch(e){} }
+function dayDone(n){ return !!(PP.days[n]&&PP.days[n].done); }
+function dayCount(n){ return (PP.days[n]&&PP.days[n].c)||0; }
+function doneTotal(){ var t=0; for(var i=1;i<=PLAN.length;i++) if(dayDone(i)) t++; return t; }
+function nextOpen(){ for(var i=1;i<=PLAN.length;i++){ if(!dayDone(i)) return i; } return PLAN.length; }
+function isOpen(n){ return PP.all || n<=nextOpen(); }
+function dstamp(d){ return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
+function dnum(str){ var q=str.split("-"); return Math.round(Date.UTC(+q[0],+q[1]-1,+q[2])/864e5); }
+function gapDays(){ return PP.last? dnum(dstamp(new Date()))-dnum(PP.last) : null; }
+
+/* ---------- drill engine ---------- */
+function initDrill(host,cfg){
+  var topic=cfg.topic, opt=cfg.opt||null, cur=null, locked=false, sel=null;
+  host.innerHTML='<div class="drill-head"><span class="label">Practice</span><span class="score"></span></div>'+
+    '<div class="pad">'+
+      '<figure class="qfig" hidden></figure>'+
+      '<p class="qtext"></p>'+
+      '<div class="qbody"></div>'+
+      '<div class="fb" role="status" aria-live="polite"></div>'+
+      '<div class="steps" hidden><ol></ol></div>'+
+      '<div class="btns">'+
+        '<button class="btn primary" data-a="check">Check answer</button>'+
+        '<button class="btn" data-a="steps">Show steps</button>'+
+        '<button class="btn" data-a="next">New problem</button>'+
+      '</div>'+
+      '<div class="banner-slot"></div>'+
+    '</div>';
+  var elFig=$(".qfig",host), elQ=$(".qtext",host), elB=$(".qbody",host), elF=$(".fb",host),
+      elS=$(".steps",host), elScore=$(".score",host), elSlot=$(".banner-slot",host);
+  var bCheck=$('[data-a="check"]',host), bSteps=$('[data-a="steps"]',host), bNext=$('[data-a="next"]',host);
+  function score(){
+    if(cfg.target){
+      var got=Math.min(dayCount(cfg.day),cfg.target), pips="";
+      for(var i=0;i<cfg.target;i++) pips+='<span class="pip'+(i<got?" on":"")+'"></span>';
+      elScore.className="tgt"; elScore.innerHTML=pips+'<span class="tgtxt">'+got+' of '+cfg.target+' to finish</span>';
+    } else {
+      var st=stats[topic]||{c:0,t:0};
+      elScore.className="score"; elScore.textContent=st.t? st.c+" / "+st.t+" correct":"no attempts yet";
+    }
+  }
+  function next(){
+    cur=G[topic](opt); locked=false; sel=null;
+    elF.className="fb"; elF.textContent=""; elS.hidden=true; $("ol",elS).innerHTML="";
+    bCheck.disabled=false;
+    if(cur.fig){ elFig.hidden=false; elFig.innerHTML=cur.fig; } else { elFig.hidden=true; elFig.innerHTML=""; }
+    elQ.innerHTML=cur.prompt;
+    var h="";
+    if(cur.kind==="mc") h='<div class="choices">'+cur.choices.map(function(c,i){return '<button class="choice" data-i="'+i+'">'+c+'</button>'}).join("")+'</div>';
+    else if(cur.kind==="point") h='<div class="ansrow"><input class="in mono" type="text" autocomplete="off" placeholder="(x, y)" aria-label="Your answer"><span class="unitlabel">as a point</span></div>';
+    else h='<div class="ansrow"><input class="in mono" type="text" autocomplete="off" placeholder="'+(cur.placeholder||"your answer")+'" aria-label="Your answer">'+(cur.unit?'<span class="unitlabel">'+cur.unit+'</span>':'')+'</div>';
+    elB.innerHTML=h;
+    if(cur.kind==="mc") $$(".choice",elB).forEach(function(b){
+      b.addEventListener("click",function(){ if(locked) return;
+        $$(".choice",elB).forEach(function(x){x.classList.remove("sel")}); b.classList.add("sel"); sel=b.innerHTML; });
+    });
+    $$("input",elB).forEach(function(i){ i.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); check(); } }); });
+  }
+  function reveal(){ elS.hidden=false; $("ol",elS).innerHTML=cur.steps.map(function(x){return "<li>"+x+"</li>"}).join(""); }
+  function check(){
+    if(locked||!cur) return;
+    var ok=false;
+    if(cur.kind==="mc"){
+      if(!sel){ elF.className="fb bad show"; elF.textContent="Pick one first."; return; }
+      ok=sel===cur.correct;
+      $$(".choice",elB).forEach(function(b){ b.classList.remove("sel");
+        if(b.innerHTML===cur.correct) b.classList.add("right");
+        else if(b.innerHTML===sel) b.classList.add("wrong"); });
+    } else {
+      var v=$("input",elB).value.trim();
+      if(!v){ elF.className="fb bad show"; elF.textContent="Type an answer first."; return; }
+      ok=cur.check(v);
+    }
+    locked=true; bCheck.disabled=true;
+    bump(topic,ok);
+    elF.className="fb "+(ok?"good":"bad")+" show";
+    elF.innerHTML=ok? "Correct &mdash; "+cur.answer+"." : "Not quite. The answer is "+cur.answer+".";
+    reveal();
+    if(cfg.onAnswer) cfg.onAnswer(ok);
+    score();
+  }
+  bCheck.addEventListener("click",check);
+  bSteps.addEventListener("click",function(){ if(cur) reveal(); });
+  bNext.addEventListener("click",function(){ next(); var i=$("input",elB); if(i) i.focus(); });
+  score(); next();
+  return {refresh:score, banner:function(html){ elSlot.innerHTML=html; }};
+}
+$$(".drill[data-topic]").forEach(function(h){ initDrill(h,{topic:h.dataset.topic}); });
+
+/* ---------- path controller ---------- */
+var curDay=nextOpen(), dayApi=null;
+var resume=document.createElement("div"); resume.className="resume";
+$("#path").insertBefore(resume,$(".path-top"));
+
+function renderResume(){
+  var done=doneTotal(), gap=gapDays(), when="";
+  if(gap===0) when="You already studied today.";
+  else if(gap===1) when="You were last here yesterday.";
+  else if(gap>1) when="You were last here "+gap+" days ago.";
+  var msg;
+  if(done===0) msg="<b>First time here?</b> <span>Start at Day 1 &mdash; it assumes you have never taken geometry.</span>";
+  else if(done>=PLAN.length) msg="<b>You finished all "+PLAN.length+" days.</b> <span>"+when+" The proof builder in the library is the last thing to master.</span>";
+  else msg="<b>Welcome back &mdash; you are on Day "+nextOpen()+".</b> <span>"+when+" "+done+" of "+PLAN.length+" days done.</span>";
+  resume.innerHTML=msg+(PP.streak>1?'<span class="streak">'+PP.streak+"-day streak</span>":"");
+  document.title="Day "+nextOpen()+" · Compass and Proof";
+}
+function renderStrip(){
+  $("#daystrip").innerHTML=PLAN.map(function(d,i){
+    var n=i+1, cls=dayDone(n)?"done":(n===curDay?"now":(isOpen(n)?"":"locked"));
+    return '<button class="dbtn '+cls+'" data-n="'+n+'" title="Day '+n+" — "+d.t.replace(/"/g,"")+'" aria-label="Day '+n+": "+d.t.replace(/"/g,"")+'">'+(dayDone(n)&&n!==curDay?"✓":n)+'</button>';
+  }).join("");
+  $$("#daystrip .dbtn").forEach(function(b){ b.addEventListener("click",function(){ openDay(+b.dataset.n); }); });
+  $("#day-progress").textContent=doneTotal()+" of "+PLAN.length+" days complete";
+}
+function completeBanner(n){
+  if(n>=PLAN.length) return '<div class="done-banner"><h4>That is the whole path.</h4><p>Twenty-one days, first semester covered. Now go build a two-column proof in the library below &mdash; it is the one thing on the final that is not a calculation.</p></div>';
+  return '<div class="done-banner"><h4>Day '+n+' complete.</h4><p>Come back tomorrow, or keep going now &mdash; Day '+(n+1)+' is '+PLAN[n].t.toLowerCase()+'.</p><button class="btn primary" id="go-next">Start Day '+(n+1)+'</button></div>';
+}
+function openDay(n){
+  if(!isOpen(n)){
+    var need=nextOpen();
+    $("#lesson").innerHTML='<div class="step"><h4>Day '+n+' is still locked</h4><p>Finish Day '+need+' first &mdash; each day leans on the one before it. If you already know this material, use <b>Unlock every day</b> above.</p></div>';
+    return;
+  }
+  curDay=n; var d=PLAN[n-1];
+  $("#day-eyebrow").textContent="Day "+n+" of "+PLAN.length;
+  $("#day-title").textContent=d.t;
+  $("#day-goal").textContent=d.goal;
+  $("#day-meta").textContent=d.min+" · "+(dayDone(n)?"completed":"in progress");
+  $("#lesson").innerHTML=d.teach.map(function(t){ return '<div class="step"><h4>'+t[0]+'</h4><p>'+t[1]+'</p></div>'; }).join("")+
+    (d.tip?'<div class="tip"><b>Worth knowing</b>'+d.tip+'</div>':"");
+  dayApi=initDrill($("#daydrill"),{topic:d.drill.topic, opt:d.drill.opt, day:n, target:d.drill.target, onAnswer:function(ok){
+    if(!ok) return;
+    PP.days[n]=PP.days[n]||{c:0};
+    PP.days[n].c=(PP.days[n].c||0)+1;
+    if(PP.days[n].c>=d.drill.target && !PP.days[n].done){
+      PP.days[n].done=true;
+      var t=dstamp(new Date());
+      if(PP.last!==t){ var g=gapDays(); PP.streak=(g===1)?(PP.streak||0)+1:1; PP.last=t; }
+      showComplete(n);
+    }
+    psave(); renderStrip(); renderResume();
+  }});
+  if(dayDone(n)) showComplete(n);
+  renderStrip(); renderResume();
+}
+function showComplete(n){
+  if(!dayApi) return;
+  dayApi.banner(completeBanner(n));
+  var go=$("#go-next");
+  if(go) go.addEventListener("click",function(){ openDay(n+1); $("#path").scrollIntoView({behavior:"smooth",block:"start"}); });
+}
+$("#unlock-all").addEventListener("click",function(){
+  PP.all=!PP.all; psave(); renderStrip();
+  this.textContent=PP.all? "Follow the path in order" : "Unlock every day";
+});
+if(PP.all) $("#unlock-all").textContent="Follow the path in order";
+openDay(curDay);
+
+/* ---------- static figures ---------- */
+$("#fig-transversal").innerHTML=transversalSVG([])+'<figcaption>Lines l and m are parallel; t is the transversal.</figcaption>';
+$("#fig-congruence").innerHTML=trianglePairSVG({AB:1,BC:2,AC:3})+'<figcaption>Matching tick marks mean matching parts — here, SSS.</figcaption>';
+$("#fig-similar").innerHTML=similarSVG()+'<figcaption>Same angles, every side multiplied by the same number.</figcaption>';
+$("#fig-circle").innerHTML=circleSVG()+'<figcaption>Both angles open onto arc AB; the inscribed one is half the central one.</figcaption>';
+
+/* ---------- live right-triangle solver ---------- */
+var la=$("#leg-a"), lb=$("#leg-b");
+function drawSolver(){
+  var a=parseFloat(la.value), b=parseFloat(lb.value);
+  if(!isFinite(a)||a<=0) a=3; if(!isFinite(b)||b<=0) b=4;
+  var c=Math.sqrt(a*a+b*b);
+  $("#fig-right").innerHTML=rightSVG(a,b)+'<figcaption>The figure redraws to scale as you type.</figcaption>';
+  $("#out-c").textContent=r2(c);
+  $("#out-area").textContent=r2(a*b/2);
+  $("#out-p").textContent=r2(a+b+c);
+}
+la.addEventListener("input",drawSolver); lb.addEventListener("input",drawSolver); drawSolver();
+
+/* ---------- two-column proofs ---------- */
+var BANK=["Given","Definition of a linear pair","Linear Pair Postulate","Vertical Angles Theorem",
+"Substitution Property","Subtraction Property of Equality","Reflexive Property","Definition of an angle bisector",
+"Corresponding Angles Postulate","Transitive Property","SSS","SAS","ASA","Definition of a midpoint"];
+var PROOFS=[
+{name:"Vertical angles",
+ given:"Lines AB and CD intersect at point E.", prove:"&ang;1 &cong; &ang;2",
+ rows:[
+  ["&ang;1 and &ang;3 are a linear pair; &ang;2 and &ang;3 are a linear pair","Definition of a linear pair"],
+  ["m&ang;1 + m&ang;3 = 180&deg;","Linear Pair Postulate"],
+  ["m&ang;2 + m&ang;3 = 180&deg;","Linear Pair Postulate"],
+  ["m&ang;1 + m&ang;3 = m&ang;2 + m&ang;3","Substitution Property"],
+  ["m&ang;1 = m&ang;2, so &ang;1 &cong; &ang;2","Subtraction Property of Equality"]
+ ]},
+{name:"Angle bisector",
+ given:"BD bisects &ang;ABC, and AB &cong; CB.", prove:"&#9651;ABD &cong; &#9651;CBD",
+ rows:[
+  ["AB &cong; CB","Given"],
+  ["BD bisects &ang;ABC","Given"],
+  ["&ang;ABD &cong; &ang;CBD","Definition of an angle bisector"],
+  ["BD &cong; BD","Reflexive Property"],
+  ["&#9651;ABD &cong; &#9651;CBD","SAS"]
+ ]},
+{name:"Alternate exterior angles",
+ given:"Line l &#8741; line m, cut by transversal t.", prove:"&ang;1 &cong; &ang;8",
+ rows:[
+  ["l &#8741; m","Given"],
+  ["&ang;1 &cong; &ang;5","Corresponding Angles Postulate"],
+  ["&ang;5 &cong; &ang;8","Vertical Angles Theorem"],
+  ["&ang;1 &cong; &ang;8","Transitive Property"]
+ ]}
+];
+var pIdx=0;
+function renderProof(){
+  var p=PROOFS[pIdx];
+  var h='<div class="gp"><div><span class="label">Given</span><p>'+p.given+'</p></div><div><span class="label">Prove</span><p>'+p.prove+'</p></div></div>';
+  if(pIdx===2) h+='<figure style="margin-bottom:20px">'+transversalSVG([1,8])+'</figure>';
+  h+='<table class="proof"><thead><tr><th></th><th>Statement</th><th>Reason</th></tr></thead><tbody>';
+  p.rows.forEach(function(r,i){
+    h+='<tr><td>'+(i+1)+'.</td><td>'+r[0]+'</td><td><select class="in mono" data-i="'+i+'" aria-label="Reason for statement '+(i+1)+'"><option value="">choose a reason…</option>'+
+      BANK.map(function(b){return '<option>'+b+'</option>'}).join("")+'</select></td></tr>';
+  });
+  h+='</tbody></table><div class="btns"><button class="btn primary" id="p-check">Check the proof</button><button class="btn" id="p-show">Show the reasons</button></div><div class="fb" id="p-fb" role="status" aria-live="polite"></div>';
+  $("#proof-host").innerHTML=h;
+  $("#p-check").addEventListener("click",function(){
+    var right=0, total=p.rows.length, blank=false;
+    $$("#proof-host select").forEach(function(s,i){
+      s.classList.remove("right","wrong");
+      if(!s.value){ blank=true; return; }
+      if(s.value===p.rows[i][1]){ s.classList.add("right"); right++; } else s.classList.add("wrong");
+    });
+    var fb=$("#p-fb"); fb.className="fb show "+(right===total?"good":"bad");
+    fb.textContent = blank? "Fill in every reason before checking."
+      : right===total? "Every reason is correct — that is a complete proof."
+      : right+" of "+total+" reasons are right. The red rows are the ones to rethink.";
+    if(!blank) bump("proofs", right===total);
+  });
+  $("#p-show").addEventListener("click",function(){
+    $$("#proof-host select").forEach(function(s,i){ s.value=p.rows[i][1]; s.classList.remove("wrong"); s.classList.add("right"); });
+    var fb=$("#p-fb"); fb.className="fb show good"; fb.textContent="These are the reasons. Read down the column — each line has to be legal before the next one is.";
+  });
+}
+$("#proof-pick").innerHTML=PROOFS.map(function(p,i){return '<button class="btn'+(i===0?" primary":"")+'" data-p="'+i+'">'+p.name+'</button>'}).join("");
+$$("#proof-pick .btn").forEach(function(b){
+  b.addEventListener("click",function(){
+    pIdx=+b.dataset.p;
+    $$("#proof-pick .btn").forEach(function(x){x.classList.remove("primary")});
+    b.classList.add("primary");
+    renderProof();
+  });
+});
+renderProof();
+
+/* ---------- nav + reset ---------- */
+var chips=$$(".chip");
+if("IntersectionObserver" in window){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){
+      chips.forEach(function(c){ c.classList.toggle("on", c.getAttribute("href")==="#"+e.target.id); }); } });
+  },{rootMargin:"-64px 0px -72% 0px"});
+  $$(".unit").forEach(function(u){io.observe(u)});
+}
+$("#reset").addEventListener("click",function(){
+  stats={}; save(); paintTotals();
+  PP={days:{}, all:PP.all, last:null, streak:0}; psave();
+  curDay=1; openDay(1);
+  $$(".drill .score").forEach(function(s){ s.textContent="no attempts yet"; });
+});
+paintTotals();
+})();
+</script>
+</body>
+</html>
