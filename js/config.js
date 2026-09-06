@@ -9,7 +9,7 @@
  *
  * Leave it empty and the site still works — it just saves progress in the browser only.
  */
-const WORKER_URL = "";
+const WORKER_URL = "https://study-api.study-api.workers.dev";
 
 const override = new URLSearchParams(location.search).get("api");   // handy for testing
 const onGitHubPages = location.hostname.endsWith("github.io");
