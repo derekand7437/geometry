@@ -74,6 +74,21 @@ folder `/ (root)`. The site works; sign-in stays hidden.
 Service from this repo with start command `npm start`. Note that free tiers usually wipe the
 disk on redeploy, which would erase `data/study.db`; a real deployment wants a hosted database.
 
+## Accounts on the live site
+
+GitHub Pages serves files but cannot run a server, so on the published site this page saves
+progress in the visitor's own browser and hides the sign-in control.
+
+To turn on real accounts, deploy the shared API in `../study-api` (Cloudflare Workers + D1,
+free), then paste the URL it prints into `js/config.js`:
+
+```js
+const WORKER_URL = "https://study-api.your-name.workers.dev";
+```
+
+Commit, push, and the live site gains account creation, cross-device progress and the stats
+panel. One account covers both the chemistry and geometry sites.
+
 ## The 21 days
 
 Points, lines and notation · classifying angles · complementary and supplementary ·

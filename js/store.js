@@ -1,5 +1,6 @@
 import { api } from "./api.js";
 import { debounce } from "./util.js";
+import { API_BASE } from "./config.js";
 
 /**
  * Progress for one subject. Local-first: localStorage is written synchronously so the page
@@ -83,7 +84,7 @@ class Store {
     if (!api.signedIn || !this.queue.length) return;
     const rows = this.queue.splice(0, this.queue.length);
     if (sync && navigator.sendBeacon){
-      navigator.sendBeacon("/api/attempts?token=" + encodeURIComponent(api.token),
+      navigator.sendBeacon(API_BASE + "/api/attempts?token=" + encodeURIComponent(api.token),
         new Blob([JSON.stringify({ attempts: rows })], { type: "application/json" }));
       return;
     }

@@ -3,6 +3,8 @@
  * Every call resolves to { ok, status, data } — network failures included — so callers
  * can fall back to local-only mode without try/catch at each site.
  */
+import { API_BASE } from "./config.js";
+
 const TOKEN_KEY = "studyapp.token";
 const USER_KEY  = "studyapp.user";
 
@@ -20,6 +22,7 @@ export const api = {
   available: null,
   async detect(){
     if (this.available !== null) return this.available;
+    if (!API_BASE && location.hostname.endsWith("github.io")) return (this.available = false);
     const res = await this.call("/health");
     this.available = !!(res.ok && res.data && res.data.ok);
     return this.available;
@@ -30,7 +33,7 @@ export const api = {
     if (body) headers["Content-Type"] = "application/json";
     if (this.token) headers.Authorization = "Bearer " + this.token;
     try {
-      const res = await fetch("/api" + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+      const res = await fetch(API_BASE + "/api" + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
       const text = await res.text();
       let data = null;
       try { data = text ? JSON.parse(text) : null; } catch { data = { error: text }; }
