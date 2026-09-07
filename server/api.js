@@ -1,5 +1,7 @@
 import { store } from "./db.js";
-import { hashPassword, verifyPassword, newToken, validateCredentials, rateLimit } from "./auth.js";
+import { hashPassword, verifyPassword, newToken, validateCredentials, rateLimit,
+         normalizePhone, phoneHint, newCode, sealCode, checkCode, smsConfigured, sendCode,
+         CODE_TTL_MS, MAX_CODE_TRIES, MAX_CODE_SENDS } from "./auth.js";
 
 const SUBJECTS = new Set((process.env.SUBJECTS || "chemistry,geometry").split(",").map(s => s.trim()).filter(Boolean));
 const MAX_BODY = 256 * 1024;
@@ -47,19 +49,36 @@ export async function handleApi(req, res, url){
   try {
     /* ---------- is there a backend at all? ---------- */
     if (path === "/health" && req.method === "GET")
-      return json(res, 200, { ok: true, subjects: [...SUBJECTS] }), true;
+      return json(res, 200, { ok: true, subjects: [...SUBJECTS], twoFactor: smsConfigured() }), true;
 
     /* ---------- accounts ---------- */
     if (path === "/register" && req.method === "POST"){
       if (!rateLimit("reg:" + ip, 5)) return json(res, 429, { error: "Too many attempts. Wait a minute." }), true;
-      const { username, password } = await readBody(req);
+      const { username, password, phone } = await readBody(req);
       const bad = validateCredentials(username, password);
       if (bad) return json(res, 400, { error: bad }), true;
+
+      const e164 = normalizePhone(phone);
+      if (!e164) return json(res, 400, { error: "Enter a phone number that can receive texts." }), true;
       if (store.userByName(username)) return json(res, 409, { error: "That username is taken." }), true;
-      const created = store.createUser(username, hashPassword(password));
-      const token = newToken();
-      store.addSession(token, created.id);
-      return json(res, 201, { token, user: publicUser(created) }), true;
+
+      const pass = hashPassword(password);
+
+      // With no SMS gateway there is no way to prove the number, so keep signup one step
+      // rather than asking for a code that can never arrive.
+      if (!smsConfigured()){
+        const created = store.createUser(username, pass, e164);
+        const token = newToken();
+        store.addSession(token, created.id);
+        return json(res, 201, { token, user: publicUser(created) }), true;
+      }
+
+      const code = newCode();
+      const sent = await sendCode(e164, code);
+      if (!sent.ok) return json(res, 502, { error: sent.error }), true;
+      const id = newToken();
+      store.addPending({ id, username, pass, phone: e164, code: sealCode(code), expires: Date.now() + CODE_TTL_MS });
+      return json(res, 202, { pending: id, phoneHint: phoneHint(e164) }), true;
     }
 
     if (path === "/login" && req.method === "POST"){
@@ -70,9 +89,101 @@ export async function handleApi(req, res, url){
       const row = store.userByName(username);
       if (!row || !verifyPassword(password, row.pass))
         return json(res, 401, { error: "Wrong username or password." }), true;
+      if (smsConfigured() && row.phone){
+        const code = newCode();
+        const sent = await sendCode(row.phone, code);
+        if (!sent.ok) return json(res, 502, { error: sent.error }), true;
+        const id = newToken();
+        store.addChallenge(id, row.id, sealCode(code), Date.now() + CODE_TTL_MS);
+        return json(res, 202, { challenge: id, phoneHint: phoneHint(row.phone) }), true;
+      }
+
       const token = newToken();
       store.addSession(token, row.id);
       return json(res, 200, { token, user: publicUser(row) }), true;
+    }
+
+    /* ---------- step two: the code ---------- */
+    if (path === "/verify" && req.method === "POST"){
+      if (!rateLimit("verify:" + ip, 60, 300_000))
+        return json(res, 429, { error: "Too many attempts. Wait a few minutes." }), true;
+      const { pending, challenge, code } = await readBody(req);
+      if (typeof code !== "string" || !/^\d{4,8}$/.test(code.trim()))
+        return json(res, 400, { error: "Enter the code from the text." }), true;
+      const entered = code.trim();
+
+      if (pending){
+        const row = store.getPending(pending);
+        if (!row) return json(res, 404, { error: "That code has expired. Start again." }), true;
+        if (Date.now() > row.expires){
+          store.dropPending(pending);
+          return json(res, 410, { error: "That code has expired. Start again." }), true;
+        }
+        if (!checkCode(entered, row.code)){
+          const tries = row.tries + 1;
+          if (tries >= MAX_CODE_TRIES){
+            store.dropPending(pending);
+            return json(res, 429, { error: "Too many wrong codes. Start again." }), true;
+          }
+          store.pendingTries(pending, tries);
+          return json(res, 401, { error: `That code is not right. ${MAX_CODE_TRIES - tries} tries left.` }), true;
+        }
+        store.dropPending(pending);
+        if (store.userByName(row.username))
+          return json(res, 409, { error: "That username was taken while you were verifying." }), true;
+        const created = store.createUser(row.username, row.pass, row.phone);
+        const token = newToken();
+        store.addSession(token, created.id);
+        return json(res, 201, { token, user: publicUser(created) }), true;
+      }
+
+      if (challenge){
+        const row = store.getChallenge(challenge);
+        if (!row) return json(res, 404, { error: "That code has expired. Sign in again." }), true;
+        if (Date.now() > row.expires){
+          store.dropChallenge(challenge);
+          return json(res, 410, { error: "That code has expired. Sign in again." }), true;
+        }
+        if (!checkCode(entered, row.code)){
+          const tries = row.tries + 1;
+          if (tries >= MAX_CODE_TRIES){
+            store.dropChallenge(challenge);
+            return json(res, 429, { error: "Too many wrong codes. Sign in again." }), true;
+          }
+          store.challengeTries(challenge, tries);
+          return json(res, 401, { error: `That code is not right. ${MAX_CODE_TRIES - tries} tries left.` }), true;
+        }
+        store.dropChallenge(challenge);
+        const who = store.userById(row.user_id);
+        if (!who) return json(res, 404, { error: "That account is gone." }), true;
+        const token = newToken();
+        store.addSession(token, who.id);
+        return json(res, 200, { token, user: publicUser(who) }), true;
+      }
+
+      return json(res, 400, { error: "Nothing to verify." }), true;
+    }
+
+    /* ---------- send it again ---------- */
+    if (path === "/resend" && req.method === "POST"){
+      if (!rateLimit("resend:" + ip, 20, 300_000))
+        return json(res, 429, { error: "Too many texts requested. Wait a few minutes." }), true;
+      const { pending, challenge } = await readBody(req);
+      const row = pending ? store.getPending(pending) : challenge ? store.getChallenge(challenge) : null;
+      if (!row) return json(res, 400, { error: "Nothing to resend." }), true;
+      if (Date.now() > row.expires) return json(res, 404, { error: "That code has expired. Start again." }), true;
+      if (row.sends >= MAX_CODE_SENDS) return json(res, 429, { error: "That is as many texts as we can send. Start again." }), true;
+
+      const to = pending ? row.phone : (store.userByName((store.userById(row.user_id) || {}).username) || {}).phone;
+      if (!to) return json(res, 404, { error: "No number on file." }), true;
+
+      const code = newCode();
+      const sent = await sendCode(to, code);
+      if (!sent.ok) return json(res, 502, { error: sent.error }), true;
+      const expires = Date.now() + CODE_TTL_MS;
+      pending ? store.pendingResend(pending, sealCode(code), row.sends + 1, expires)
+              : store.challengeResend(challenge, sealCode(code), row.sends + 1, expires);
+      return json(res, 200, { ok: true, phoneHint: phoneHint(to) }), true;
     }
 
     if (path === "/logout" && req.method === "POST"){

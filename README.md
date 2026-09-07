@@ -59,6 +59,8 @@ data/study.db   created on first run; not in git
 | GET | `/api/health` | is a backend present |
 | POST | `/api/register` · `/login` · `/logout` | accounts |
 | GET | `/api/me` | who am I |
+| POST | `/api/verify` | step two: the texted code |
+| POST | `/api/resend` | text the code again |
 | GET/PUT | `/api/prefs` | appearance settings, shared by both subjects |
 | GET/PUT | `/api/progress/geometry` | saved progress |
 | POST | `/api/attempts` | log answered problems |
@@ -68,6 +70,17 @@ Progress is written to `localStorage` first and pushed to the server behind it, 
 never waits on the network. On load the two copies are merged — the higher count for each
 day, and any day either side has finished — so signing in on a new device pulls your history
 down, and signing in after working signed-out pushes that work up.
+
+## Two-step verification
+
+Signing up asks for a phone number; signing in asks for the code texted to it. The password
+alone never returns a session. The browser does not decide any of this — the server answers
+with a pending/challenge id instead of a token when a code is needed, so the same dialog
+works whether or not texting is switched on.
+
+Texting needs an SMS provider configured on the backend (`../study-api`, Twilio). Until it
+is, phone numbers are still collected but there is no code step, because a code nobody can
+receive would lock everyone out.
 
 ## The home screen
 

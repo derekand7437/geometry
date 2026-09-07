@@ -20,11 +20,13 @@ export const api = {
 
   /** Served as static files (GitHub Pages), there is no API. Ask once, then adapt the UI. */
   available: null,
+  twoFactor: false,
   async detect(){
     if (this.available !== null) return this.available;
     if (!API_BASE && location.hostname.endsWith("github.io")) return (this.available = false);
     const res = await this.call("/health");
     this.available = !!(res.ok && res.data && res.data.ok);
+    this.twoFactor = !!(res.data && res.data.twoFactor);
     return this.available;
   },
 
@@ -47,7 +49,10 @@ export const api = {
   remember(token, user){ write(TOKEN_KEY, token); write(USER_KEY, JSON.stringify(user)); },
   clear(){ write(TOKEN_KEY, null); write(USER_KEY, null); },
 
-  register(username, password){ return this.call("/register", { method: "POST", body: { username, password } }); },
+  register(username, password, phone){ return this.call("/register", { method: "POST", body: { username, password, phone } }); },
+  /** Step two, for either flow: pass { pending, code } or { challenge, code }. */
+  verify(payload){ return this.call("/verify", { method: "POST", body: payload }); },
+  resend(payload){ return this.call("/resend", { method: "POST", body: payload }); },
   login(username, password){ return this.call("/login", { method: "POST", body: { username, password } }); },
   logout(){ const p = this.call("/logout", { method: "POST" }); this.clear(); return p; },
   me(){ return this.call("/me"); },
