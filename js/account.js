@@ -169,7 +169,7 @@ export async function mountAccount(){
   }
 
   async function succeed(data){
-    api.remember(data.token, data.user);
+    api.remember(data.token, data.user, mode);
     dialog.close("go");
     await store.sync();
     render();
