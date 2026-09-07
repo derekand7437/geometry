@@ -297,3 +297,109 @@ input[type="color"]::-moz-color-swatch{ border:0; border-radius:7px }
   .auth-card h3{ font-size:18px }
   .auth-btns .btn{ min-height:42px }
 }
+
+/* ---------- welcome screen (signed out) ---------- */
+.home-inner.welcome{ justify-content:center }
+.welcome-mid{
+  flex:1 1 auto; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; gap:clamp(12px,2.4vh,22px); padding:clamp(10px,3vh,30px) 0;
+}
+.welcome-title{
+  font-family:"Archivo","Helvetica Neue",Arial,sans-serif; margin:0;
+  font-size:clamp(34px,7.4vw,76px); font-weight:700; letter-spacing:-.035em; line-height:1.02;
+  color:var(--ink, #111); text-wrap:balance;
+}
+.welcome-title em{ font-style:normal; color:var(--accent, var(--draw, #369)); display:inline-block }
+.welcome-slogan{
+  margin:0; max-width:22ch; text-wrap:balance;
+  font-size:clamp(17px,2.6vw,27px); line-height:1.35; color:var(--muted, #667);
+}
+.welcome-actions{
+  display:flex; gap:clamp(10px,2vw,18px); flex-wrap:wrap; justify-content:center;
+  margin-top:clamp(6px,1.6vh,16px);
+}
+.welcome-actions .home-btn{ min-width:min(46vw, 210px) }
+.welcome-skip{ margin-top:4px; font-size:14.5px; color:var(--muted, #667) }
+
+@media (max-width:720px){
+  .welcome-actions{ width:100%; flex-direction:column; gap:12px }
+  .welcome-actions .home-btn{ width:100%; min-width:0 }
+  .welcome-title{ font-size:clamp(30px,9vw,46px) }
+  .welcome-slogan{ font-size:clamp(16px,4.6vw,21px) }
+}
+@media (max-height:560px) and (orientation:landscape){
+  .welcome-mid{ gap:8px }
+  .welcome-title{ font-size:clamp(26px,5vw,40px) }
+  .welcome-slogan{ font-size:clamp(14px,2vw,18px) }
+  .welcome-actions{ flex-direction:row }
+  .welcome-actions .home-btn{ padding:12px 30px }
+  .welcome-actions .home-btn .home-btn-main{ font-size:clamp(17px,2.4vw,22px) }
+}
+
+/* ---------- the question runner: one question, whole screen ---------- */
+body.study-open{ overflow:hidden }
+.study{
+  position:fixed; inset:0; z-index:320; overflow:auto;
+  background:var(--bg, #fff); color:var(--ink, #111);
+}
+.study-bar{
+  position:sticky; top:0; z-index:2; display:flex; align-items:center; gap:14px;
+  padding:10px clamp(14px,3vw,26px);
+  background:var(--surface, var(--sheet, #fff)); border-bottom:1px solid var(--line, #ddd);
+}
+.study-leave{
+  font:inherit; font-size:14.5px; cursor:pointer; padding:8px 12px; min-height:42px;
+  border:1px solid var(--line-2, #bbb); border-radius:9px;
+  background:var(--bg, #fff); color:var(--ink, #111);
+}
+.study-leave:hover{ border-color:var(--accent, var(--draw, #369)) }
+.study-where{ display:flex; flex-direction:column; line-height:1.25; min-width:0 }
+.study-where b{ font-size:15px; letter-spacing:-.01em }
+.study-where span{ font-size:13px; color:var(--muted, #667); overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+
+.study-body{
+  max-width:820px; margin:0 auto; box-sizing:border-box;
+  padding:clamp(16px,3.4vh,36px) clamp(14px,4vw,28px) clamp(30px,6vh,60px);
+}
+.study-card{
+  background:var(--surface, var(--sheet, #fff));
+  border:1px solid var(--line, #ddd); border-radius:14px;
+  padding:clamp(16px,3.2vw,30px);
+  box-shadow:var(--shadow, 0 10px 30px -22px rgba(0,0,0,.5));
+}
+.study-kicker{
+  font-family:"IBM Plex Mono","JetBrains Mono",monospace;
+  font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted, #667);
+}
+.study-h{
+  font-family:"Archivo","Helvetica Neue",Arial,sans-serif; margin:6px 0 8px;
+  font-size:clamp(24px,4.2vw,38px); font-weight:700; letter-spacing:-.03em; line-height:1.1;
+}
+.study-goal{ margin:0 0 18px; font-size:clamp(16px,2vw,19px); color:var(--ink-2, #333); line-height:1.5 }
+.study-teach{ display:flex; flex-direction:column; gap:14px; margin-bottom:18px }
+.study-go{ width:100%; margin-top:20px; padding:16px 24px; font-size:clamp(17px,2.4vw,21px) }
+.study-note{ margin:10px 0 0; font-size:14px; color:var(--muted, #667); text-align:center }
+.done-btns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px }
+
+/* the drill fills the card rather than sitting in a page column */
+.study-card .drill{ border:0; padding:0; background:none; box-shadow:none }
+.study-card .qtext{ font-size:clamp(17px,2.3vw,21px) }
+.study-card .btns{ flex-wrap:wrap }
+.study-card .btns .btn{ min-height:46px }
+
+@media (max-width:720px){
+  .study-body{ padding:14px 12px 40px }
+  .study-card{ padding:16px; border-radius:12px }
+  .study-card .btns .btn{ flex:1 1 auto }
+}
+
+/* ---------- the practice hand-offs left on the page ---------- */
+.practice-cta{
+  display:flex; flex-direction:column; align-items:flex-start; gap:9px; justify-content:center;
+  padding:clamp(16px,2.4vw,26px);   /* .sheet/.card get padding from an inner element; this has none */
+}
+.practice-cta p{ margin:0; font-size:15px; color:var(--muted, #667); line-height:1.45 }
+.practice-cta .btn{ margin-top:4px; min-height:46px }
+
+/* .drill-head is space-between with no gap; in the narrow card the pips met the label */
+.study-card .drill-head{ gap:14px; row-gap:8px; flex-wrap:wrap }

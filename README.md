@@ -38,6 +38,7 @@ js/
   api.js        backend client; detects whether a backend exists at all
   account.js    the sign-in dialog
   home.js       the full-screen home screen — the day you are on, and the way in
+  study.js      the question runner: one question, whole screen, Next for the following one
   prefs.js      appearance settings: background colour, text colour, text size
   charts.js     the two stats charts
   stats.js      the stats panel
@@ -70,10 +71,19 @@ down, and signing in after working signed-out pushes that work up.
 
 ## The home screen
 
-Every visit opens on a full-screen home screen: which day you are on, how far through the
-path you are, and two ways in — **Start learning** or **Settings**. Dismissing it drops you
-straight into that day; the *Home & settings* control in the top bar brings it back, and
-`#settings` links straight to the settings screen.
+Every visit opens full-screen. Signed out that is a welcome: the name of the site, what it is
+for, and **Log in** / **Sign up**. (A quiet "keep going without an account" sits under them, so
+a deploy with no backend — where nobody can sign in — is not a dead end.) Signed in it becomes
+your place in the path: which day you are on, how far through you are, and **Start learning**
+or **Settings**. The *Home & settings* control in the top bar brings it back, and `#settings`
+links straight to the settings screen.
+
+## One question at a time
+
+Questions are never stacked on a page. **Start learning** opens the day full-screen — the
+lesson on its own page, then one question per screen, with **Next question** for the following
+one. Each library unit keeps its notes and figures on the page and hands practice to the same
+runner, so the page is reference and the runner is practice.
 
 Settings covers background colour, text colour and text size. The two colours drive a whole
 derived palette — panels, rules and secondary text are computed from the pair, so any

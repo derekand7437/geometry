@@ -5,8 +5,9 @@ import { store } from "./store.js";
 let openDialog = null;
 const authListeners = [];
 
-/** Open the sign-in dialog from elsewhere (the home screen). No-op with no backend. */
-export function openSignIn(){ if (openDialog) openDialog(); }
+/** Open the auth dialog from elsewhere (the home screen), in "login" or "register" mode.
+ *  No-op when there is no backend to sign into. */
+export function openSignIn(mode){ if (openDialog) openDialog(mode); }
 
 /** Notified whenever the signed-in user changes, so other screens can repaint. */
 export function onAuthChange(fn){ authListeners.push(fn); }
@@ -61,12 +62,16 @@ export async function mountAccount(){
       $("#sign-out").addEventListener("click", async () => { await api.logout(); render(); store.emit(); });
     } else {
       host.innerHTML = `<button class="linkbtn" id="sign-in">Sign in to sync across devices</button>`;
-      $("#sign-in").addEventListener("click", openDialog);
+      $("#sign-in").addEventListener("click", () => openDialog("login"));
     }
     authListeners.forEach(fn => fn(api.user));
   }
 
-  openDialog = () => { setMode("login"); dialog.showModal(); $("#auth-user", dialog).focus(); };
+  openDialog = mode => {
+    setMode(mode === "register" ? "register" : "login");
+    dialog.showModal();
+    $("#auth-user", dialog).focus();
+  };
 
   dialog.addEventListener("close", () => { if (dialog.returnValue !== "go") return; });
 

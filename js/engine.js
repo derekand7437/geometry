@@ -6,7 +6,7 @@ import { api } from "./api.js";
  * One drill panel. `cfg.target` switches it from library mode (running accuracy)
  * into day mode (progress pips and a completion banner).
  */
-function initDrill(host, cfg, app){
+export function initDrill(host, cfg, app){
   const gen = app.generators[cfg.topic];
   if (!gen) throw new Error("no generator for topic: " + cfg.topic);
   let current = null, locked = false, selected = null;
@@ -22,7 +22,7 @@ function initDrill(host, cfg, app){
       `<div class="btns">` +
         `<button class="btn primary" data-a="check">Check answer</button>` +
         `<button class="btn" data-a="steps">Show steps</button>` +
-        `<button class="btn" data-a="next">New problem</button>` +
+        `<button class="btn" data-a="next">${cfg.nextLabel || "New problem"}</button>` +
       `</div>` +
       `<div class="banner-slot"></div>` +
     `</div>`;
@@ -143,12 +143,20 @@ function initDrill(host, cfg, app){
 }
 
 /** Boot the whole page: library drills, the day path, the resume banner and the nav. */
-export function mountApp(app){
+export function mountApp(app, study){
   const plan = app.plan;
   store.init(app.id, plan.length);
 
-  /* library drills — full difficulty, no day target */
-  const libraryDrills = $$(".drill[data-topic]").map(h => initDrill(h, { topic: h.dataset.topic }, app));
+  /* Library topics open in the runner too, so no page ever stacks question after question.
+     The unit's own heading names the runner, so the page stays the single source of titles. */
+  const libraryDrills = [];
+  $$(".practice-open").forEach(b => {
+    const unit = b.closest("section");
+    const h2 = unit ? unit.querySelector("h2") : null;
+    b.addEventListener("click", () => {
+      if (study) study.openTopic(b.dataset.topic, h2 ? h2.textContent.trim() : "Practice");
+    });
+  });
 
   /* session totals in the header */
   function paintTotals(){
@@ -159,7 +167,7 @@ export function mountApp(app){
   }
 
   /* ---------- the day path ---------- */
-  let curDay = store.nextOpen(), dayApi = null;
+  let curDay = store.nextOpen();
   const resume = document.createElement("div");
   resume.className = "resume";
   $("#path").insertBefore(resume, $(".path-top"));
@@ -192,25 +200,6 @@ export function mountApp(app){
     $("#day-progress").textContent = `${store.doneTotal()} of ${plan.length} days complete`;
   }
 
-  function completeBanner(n){
-    if (n >= plan.length)
-      return `<div class="done-banner"><h4>That is the whole path.</h4><p>${app.finale}</p></div>`;
-    return `<div class="done-banner"><h4>Day ${n} complete.</h4>` +
-           `<p>Come back tomorrow, or keep going now &mdash; Day ${n + 1} is ${plan[n].t.toLowerCase()}.</p>` +
-           `<button class="btn primary" id="go-next">Start Day ${n + 1}</button></div>`;
-  }
-
-  function showComplete(n){
-    if (!dayApi) return;
-    dayApi.banner(completeBanner(n));
-    const go = $("#go-next");
-    if (go) go.addEventListener("click", () => {
-      openDay(n + 1);
-      const top = $("#path");
-      if (top.scrollIntoView) top.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  }
-
   function openDay(n){
     if (!store.isOpen(n)){
       $("#lesson").innerHTML =
@@ -228,27 +217,22 @@ export function mountApp(app){
       d.teach.map(t => `<div class="step"><h4>${t[0]}</h4><p>${t[1]}</p></div>`).join("") +
       (d.tip ? `<div class="tip"><b>Worth knowing</b>${d.tip}</div>` : "");
 
-    dayApi = initDrill($("#daydrill"), {
-      topic: d.drill.topic,
-      opt: d.drill.opt,
-      day: n,
-      target: d.drill.target,
-      onAnswer: ok => {
-        if (!ok) return;
-        const got = store.countCorrect(n);
-        if (got >= d.drill.target && store.completeDay(n)) showComplete(n);
-        renderStrip(); renderResume();
-      }
-    }, app);
+    const cta = $("#day-cta");
+    if (cta){
+      cta.textContent = store.dayDone(n) ? `Practise Day ${n} again` : `Start Day ${n} \u2014 ${d.drill.target} questions`;
+      cta.onclick = () => study && study.openDay(n);
+    }
+    const note = $("#day-cta-note");
+    if (note) note.textContent = store.dayDone(n)
+      ? "You have finished this day. Going again does not change your progress."
+      : `One question at a time. ${d.drill.target} correct finishes the day.`;
 
-    if (store.dayDone(n)) showComplete(n);
     renderStrip(); renderResume();
   }
 
   function renderAll(){
     paintTotals(); renderStrip(); renderResume();
     libraryDrills.forEach(d => d.refresh());
-    if (dayApi) dayApi.refresh();
   }
   store.onChange(renderAll);
 

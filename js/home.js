@@ -11,7 +11,7 @@ import { openSignIn, onAuthChange } from "./account.js";
  * It reads the same store the rest of the page does, so signing in — which pulls your
  * progress down from the account — moves the day number here too.
  */
-export function mountHome(app, ui){
+export function mountHome(app, ui, study){
   const plan = app.plan;
   const el = document.createElement("div");
   el.className = "home";
@@ -25,8 +25,39 @@ export function mountHome(app, ui){
   let open = true;
   document.body.classList.add("home-open");
 
+  const SLOGAN = "Helping you learn faster than teachers.";
+  let skipped = false;          // set by "keep going without an account"
+
   /* ---------- the screen you land on ---------- */
   function mainView(){
+    // A backend-less deploy has no account to sign into, so never show a gate
+    // nobody can pass — go straight to the day.
+    if (api.available !== false && !api.signedIn && !skipped) return welcomeView();
+    return dayView();
+  }
+
+  /* Signed out: the name of the place, what it is for, and the two ways in. */
+  function welcomeView(){
+    el.innerHTML =
+      `<div class="home-inner welcome">
+         <div class="welcome-mid">
+           <h1 class="welcome-title">Welcome to<br><em>${esc(app.name)}</em></h1>
+           <p class="welcome-slogan">${esc(app.slogan || SLOGAN)}</p>
+           <div class="welcome-actions">
+             <button class="home-btn go wide" id="welcome-login"><span class="home-btn-main">Log in</span></button>
+             <button class="home-btn wide" id="welcome-signup"><span class="home-btn-main">Sign up</span></button>
+           </div>
+           <button class="home-link welcome-skip" id="welcome-skip">Keep going without an account</button>
+         </div>
+       </div>`;
+
+    $("#welcome-login", el).addEventListener("click", () => openSignIn("login"));
+    $("#welcome-signup", el).addEventListener("click", () => openSignIn("register"));
+    $("#welcome-skip", el).addEventListener("click", () => { skipped = true; render(); });
+  }
+
+  /* Signed in (or carrying on without an account): where you are, and the way on. */
+  function dayView(){
     const day = store.nextOpen();
     const done = store.doneTotal();
     const finished = done >= plan.length;
@@ -34,7 +65,7 @@ export function mountHome(app, ui){
     const gap = store.gapDays();
 
     let when = "Welcome.";
-    if (done === 0) when = "Let’s begin.";
+    if (done === 0) when = "Let\u2019s begin.";
     else if (gap === 0) when = "You already studied today.";
     else if (gap === 1) when = "You were last here yesterday.";
     else if (gap > 1) when = "You were last here " + gap + " days ago.";
@@ -42,7 +73,7 @@ export function mountHome(app, ui){
     const who = api.available === false
       ? `<span class="home-who-note">Progress saves in this browser</span>`
       : (api.signedIn
-          ? `<span class="home-who-note">Signed in as <b>${esc(api.user ? api.user.username : "your account")}</b> — your progress follows you</span>`
+          ? `<span class="home-who-note">Signed in as <b>${esc(api.user ? api.user.username : "your account")}</b> \u2014 your progress follows you</span>`
           : `<button class="home-link" id="home-signin">Sign in or create an account</button>`);
 
     const pct = Math.round(done / plan.length * 100);
@@ -58,14 +89,14 @@ export function mountHome(app, ui){
            <span class="home-kicker">${esc(when)}</span>
            ${finished
              ? `<strong class="home-num">All ${plan.length} days done</strong>
-                <span class="home-title">The whole path is behind you — the library below never runs out of problems.</span>`
+                <span class="home-title">The whole path is behind you \u2014 the library below never runs out of problems.</span>`
              : `<span class="home-kicker-2">You are on</span>
                 <strong class="home-num">Day ${day}</strong>
                 <span class="home-title">${esc(d ? d.t : "")}</span>`}
            <div class="home-meter" role="img" aria-label="${done} of ${plan.length} days complete">
              <span class="home-meter-fill" style="width:${pct}%"></span>
            </div>
-           <span class="home-sub">${done} of ${plan.length} days complete${store.state.streak > 1 ? ` · ${store.state.streak}-day streak` : ""}</span>
+           <span class="home-sub">${done} of ${plan.length} days complete${store.state.streak > 1 ? ` \u00b7 ${store.state.streak}-day streak` : ""}</span>
          </div>
 
          <div class="home-actions">
@@ -81,7 +112,7 @@ export function mountHome(app, ui){
        </div>`;
 
     const signin = $("#home-signin", el);
-    if (signin) signin.addEventListener("click", openSignIn);
+    if (signin) signin.addEventListener("click", () => openSignIn("login"));
     $("#home-start", el).addEventListener("click", () => close(day));
     $("#home-settings", el).addEventListener("click", () => { view = "settings"; render(); });
   }
@@ -165,8 +196,12 @@ export function mountHome(app, ui){
     el.hidden = true;
     document.body.classList.remove("home-open");
     if (ui && ui.openDay) ui.openDay(day);
-    const path = document.getElementById("path");
-    if (path && path.scrollIntoView) path.scrollIntoView({ block: "start" });
+    // Straight into the questions, one screen at a time.
+    if (study && study.openDay) study.openDay(day);
+    else {
+      const path = document.getElementById("path");
+      if (path && path.scrollIntoView) path.scrollIntoView({ block: "start" });
+    }
   }
 
   function show(which){
