@@ -417,3 +417,6 @@ body.study-open{ overflow:hidden }
   font-size:23px; letter-spacing:.34em; text-align:center;
 }
 #auth-step-code .linkbtn{ align-self:flex-start; font-size:14px }
+
+/* the account line on the home screen carries a log out button beside it */
+.home-who{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:flex-end }

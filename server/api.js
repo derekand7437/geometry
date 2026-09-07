@@ -58,21 +58,25 @@ export async function handleApi(req, res, url){
       const bad = validateCredentials(username, password);
       if (bad) return json(res, 400, { error: bad }), true;
 
-      const e164 = normalizePhone(phone);
-      if (!e164){
-        // A cached older copy of the page has no phone box, so asking for one is a dead end.
-        return json(res, 400, { error: phone === undefined
-          ? "This page is out of date. Reload it and try again \u2014 pull down to refresh on a phone, or Ctrl+Shift+R (\u2318\u21e7R on a Mac)."
-          : "Enter a phone number that can receive texts." }), true;
+      // A number is only worth asking for if it can actually be texted; with no gateway
+      // there is no code to send and no reason to hold someone's phone number.
+      const wantsPhone = smsConfigured();
+      let e164 = null;
+      if (wantsPhone){
+        e164 = normalizePhone(phone);
+        if (!e164){
+          // A cached older copy of the page has no phone box, so asking for one is a dead end.
+          return json(res, 400, { error: phone === undefined
+            ? "This page is out of date. Reload it and try again \u2014 pull down to refresh on a phone, or Ctrl+Shift+R (\u2318\u21e7R on a Mac)."
+            : "Enter a phone number that can receive texts." }), true;
+        }
       }
       if (store.userByName(username)) return json(res, 409, { error: "That username is taken." }), true;
 
       const pass = hashPassword(password);
 
-      // With no SMS gateway there is no way to prove the number, so keep signup one step
-      // rather than asking for a code that can never arrive.
-      if (!smsConfigured()){
-        const created = store.createUser(username, pass, e164);
+      if (!wantsPhone){
+        const created = store.createUser(username, pass, null);
         const token = newToken();
         store.addSession(token, created.id);
         return json(res, 201, { token, user: publicUser(created) }), true;

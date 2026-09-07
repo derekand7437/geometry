@@ -4,7 +4,11 @@ import { store } from "./store.js";
 
 let openDialog = null;
 let pendingOpen = null;
+let doSignOut = null;
 const authListeners = [];
+
+/** Sign out from anywhere; repaints the top bar and tells every listener. */
+export async function signOut(){ if (doSignOut) await doSignOut(); }
 
 /**
  * Open the auth dialog from elsewhere (the home screen), in "login" or "register" mode.
@@ -49,6 +53,9 @@ export async function mountAccount(){
       <div id="auth-step-creds">
         <label>Username<input id="auth-user" name="username" autocomplete="username" required minlength="3" maxlength="24" spellcheck="false"></label>
         <label>Password<input id="auth-pass" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="200"></label>
+        <label id="auth-confirm-row" hidden>Type your password again
+          <input id="auth-confirm" name="confirm-password" type="password" autocomplete="new-password" maxlength="200">
+        </label>
         <label id="auth-phone-row" hidden>Phone number
           <input id="auth-phone" name="tel" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="(555) 123-4567">
           <span class="auth-hint" id="auth-phone-hint">We text a code to make sure it is really you.</span>
@@ -81,6 +88,8 @@ export async function mountAccount(){
   const stepCreds = $("#auth-step-creds", dialog);
   const stepCode  = $("#auth-step-code", dialog);
   const phoneRow  = $("#auth-phone-row", dialog);
+  const confirmRow= $("#auth-confirm-row", dialog);
+  const elConfirm = $("#auth-confirm", dialog);
   const elUser    = $("#auth-user", dialog);
   const elPass    = $("#auth-pass", dialog);
   const elPhone   = $("#auth-phone", dialog);
@@ -97,10 +106,21 @@ export async function mountAccount(){
     stepCreds.hidden = onCode;
     stepCode.hidden  = !onCode;
 
+    const registering = mode === "register";
+    // Only ask for a number the backend can actually text; otherwise it is a field that
+    // collects a phone number and does nothing with it.
+    const wantsPhone = registering && api.twoFactor;
+
     elUser.disabled = elPass.disabled = onCode;
-    elPhone.disabled = onCode || mode !== "register";
-    elPhone.required = !onCode && mode === "register";
-    phoneRow.hidden = mode !== "register";
+
+    confirmRow.hidden = !registering;
+    elConfirm.disabled = onCode || !registering;
+    elConfirm.required = !onCode && registering;
+
+    phoneRow.hidden = !wantsPhone;
+    elPhone.disabled = onCode || !wantsPhone;
+    elPhone.required = !onCode && wantsPhone;
+
     elCode.disabled = !onCode;
     elCode.required = onCode;
 
@@ -161,6 +181,12 @@ export async function mountAccount(){
     if (btn && btn.value === "cancel") return;
     e.preventDefault();
     err.hidden = true;
+
+    if (step === "creds" && mode === "register" && elPass.value !== elConfirm.value){
+      elConfirm.focus();
+      return fail("Those two passwords are not the same.");
+    }
+
     const label = go.textContent;
     go.disabled = true; go.textContent = "Working…";
 
@@ -193,8 +219,8 @@ export async function mountAccount(){
   function render(){
     if (api.signedIn){
       const u = api.user ? api.user.username : "your account";
-      host.innerHTML = `<span class="who">Signed in as <b>${u}</b></span><button class="linkbtn" id="sign-out">Sign out</button>`;
-      $("#sign-out").addEventListener("click", async () => { await api.logout(); render(); store.emit(); });
+      host.innerHTML = `<span class="who">Signed in as <b>${u}</b></span><button class="linkbtn" id="sign-out">Log out</button>`;
+      $("#sign-out").addEventListener("click", () => signOut());
     } else {
       host.innerHTML = `<button class="linkbtn" id="sign-in">Sign in to sync across devices</button>`;
       $("#sign-in").addEventListener("click", () => openDialog("login"));
@@ -202,9 +228,11 @@ export async function mountAccount(){
     authListeners.forEach(fn => fn(api.user));
   }
 
+  doSignOut = async () => { await api.logout(); render(); store.emit(); };
+
   openDialog = m => {
     setMode(m === "register" ? "register" : "login");
-    elUser.value = ""; elPass.value = ""; elPhone.value = "";
+    elUser.value = ""; elPass.value = ""; elConfirm.value = ""; elPhone.value = "";
     dialog.showModal();
     elUser.focus();
   };

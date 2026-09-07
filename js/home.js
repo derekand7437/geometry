@@ -2,7 +2,7 @@ import { $, $$, esc } from "./util.js";
 import { store } from "./store.js";
 import { api } from "./api.js";
 import { prefs, SIZES, BG_PRESETS, INK_PRESETS } from "./prefs.js";
-import { openSignIn, onAuthChange } from "./account.js";
+import { openSignIn, onAuthChange, signOut } from "./account.js";
 
 /**
  * The full-screen home screen. It opens on every visit, says which day you are on, and
@@ -27,13 +27,39 @@ export function mountHome(app, ui, study){
 
   const SLOGAN = "Helping you learn faster than teachers.";
   let skipped = false;          // set by "keep going without an account"
+  let paid = false;             // cleared on every load and on logout
 
   /* ---------- the screen you land on ---------- */
   function mainView(){
     // A backend-less deploy has no account to sign into, so never show a gate
     // nobody can pass — go straight to the day.
     if (api.available !== false && !api.signedIn && !skipped) return welcomeView();
+    if (api.signedIn && !paid) return payView();
     return dayView();
+  }
+
+  /* Shown once you are signed in, before the course opens. */
+  function payView(){
+    el.innerHTML =
+      `<div class="home-inner welcome">
+         <div class="welcome-mid">
+           <h1 class="welcome-title">Pay 5 dollars<br><em>to learn</em></h1>
+           <p class="welcome-slogan">${esc(app.name)} \u2014 the whole course, every problem.</p>
+           <div class="welcome-actions">
+             <button class="home-btn go wide" id="pay-yes"><span class="home-btn-main">Pay</span></button>
+             <button class="home-btn wide" id="pay-no"><span class="home-btn-main">Exit</span></button>
+           </div>
+         </div>
+       </div>`;
+    $("#pay-yes", el).addEventListener("click", () => { paid = true; render(); });
+    $("#pay-no", el).addEventListener("click", leaveSite);
+  }
+
+  /* A tab can only close itself if a script opened it, which is almost never true here,
+     so blanking the page is the fallback that actually leaves the site. */
+  function leaveSite(){
+    try { window.close(); } catch {}
+    setTimeout(() => { try { location.replace("about:blank"); } catch { location.href = "about:blank"; } }, 120);
   }
 
   /* Signed out: the name of the place, what it is for, and the two ways in. */
@@ -73,7 +99,8 @@ export function mountHome(app, ui, study){
     const who = api.available === false
       ? `<span class="home-who-note">Progress saves in this browser</span>`
       : (api.signedIn
-          ? `<span class="home-who-note">Signed in as <b>${esc(api.user ? api.user.username : "your account")}</b> \u2014 your progress follows you</span>`
+          ? `<span class="home-who-note">Signed in as <b>${esc(api.user ? api.user.username : "your account")}</b></span>` +
+            `<button class="home-link" id="home-signout">Log out</button>`
           : `<button class="home-link" id="home-signin">Sign in or create an account</button>`);
 
     const pct = Math.round(done / plan.length * 100);
@@ -113,6 +140,14 @@ export function mountHome(app, ui, study){
 
     const signin = $("#home-signin", el);
     if (signin) signin.addEventListener("click", () => openSignIn("login"));
+
+    const signout = $("#home-signout", el);
+    if (signout) signout.addEventListener("click", async () => {
+      skipped = false;              // logging out lands you back on the welcome screen
+      paid = false;
+      await signOut();
+      render();
+    });
     $("#home-start", el).addEventListener("click", () => close(day));
     $("#home-settings", el).addEventListener("click", () => { view = "settings"; render(); });
   }
