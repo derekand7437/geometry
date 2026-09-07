@@ -2,6 +2,15 @@ import { $ } from "./util.js";
 import { api } from "./api.js";
 import { store } from "./store.js";
 
+let openDialog = null;
+const authListeners = [];
+
+/** Open the sign-in dialog from elsewhere (the home screen). No-op with no backend. */
+export function openSignIn(){ if (openDialog) openDialog(); }
+
+/** Notified whenever the signed-in user changes, so other screens can repaint. */
+export function onAuthChange(fn){ authListeners.push(fn); }
+
 /**
  * Sign-in control. Signed out, the app is fully usable and saves locally;
  * signing in merges that local progress into the account and keeps them in step.
@@ -52,9 +61,12 @@ export async function mountAccount(){
       $("#sign-out").addEventListener("click", async () => { await api.logout(); render(); store.emit(); });
     } else {
       host.innerHTML = `<button class="linkbtn" id="sign-in">Sign in to sync across devices</button>`;
-      $("#sign-in").addEventListener("click", () => { setMode("login"); dialog.showModal(); $("#auth-user", dialog).focus(); });
+      $("#sign-in").addEventListener("click", openDialog);
     }
+    authListeners.forEach(fn => fn(api.user));
   }
+
+  openDialog = () => { setMode("login"); dialog.showModal(); $("#auth-user", dialog).focus(); };
 
   dialog.addEventListener("close", () => { if (dialog.returnValue !== "go") return; });
 

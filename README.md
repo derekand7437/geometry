@@ -37,6 +37,8 @@ js/
   store.js      progress — saved locally, synced to the server when signed in
   api.js        backend client; detects whether a backend exists at all
   account.js    the sign-in dialog
+  home.js       the full-screen home screen — the day you are on, and the way in
+  prefs.js      appearance settings: background colour, text colour, text size
   charts.js     the two stats charts
   stats.js      the stats panel
   *-content.js  the lessons, problem generators and data
@@ -56,6 +58,7 @@ data/study.db   created on first run; not in git
 | GET | `/api/health` | is a backend present |
 | POST | `/api/register` · `/login` · `/logout` | accounts |
 | GET | `/api/me` | who am I |
+| GET/PUT | `/api/prefs` | appearance settings, shared by both subjects |
 | GET/PUT | `/api/progress/geometry` | saved progress |
 | POST | `/api/attempts` | log answered problems |
 | GET | `/api/stats` | accuracy by topic, last 30 days |
@@ -64,6 +67,20 @@ Progress is written to `localStorage` first and pushed to the server behind it, 
 never waits on the network. On load the two copies are merged — the higher count for each
 day, and any day either side has finished — so signing in on a new device pulls your history
 down, and signing in after working signed-out pushes that work up.
+
+## The home screen
+
+Every visit opens on a full-screen home screen: which day you are on, how far through the
+path you are, and two ways in — **Start learning** or **Settings**. Dismissing it drops you
+straight into that day; the *Home & settings* control in the top bar brings it back, and
+`#settings` links straight to the settings screen.
+
+Settings covers background colour, text colour and text size. The two colours drive a whole
+derived palette — panels, rules and secondary text are computed from the pair, so any
+combination stays readable. Text size scales the entire page, drawn figures included.
+
+Settings save to this browser first. Because both study sites are served from one origin they
+already share those settings; signing in also carries them to your other devices.
 
 ## Publishing it
 

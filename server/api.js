@@ -86,6 +86,23 @@ export async function handleApi(req, res, url){
       return json(res, 200, { user: publicUser(user) }), true;
     }
 
+    /* ---------- appearance settings, shared by both subjects ---------- */
+    if (path === "/prefs"){
+      if (!user) return need();
+
+      if (req.method === "GET"){
+        const row = store.getPrefs(user.id);
+        return json(res, 200, { data: row ? JSON.parse(row.data) : null, updated: row ? row.updated : null }), true;
+      }
+      if (req.method === "PUT"){
+        const { data } = await readBody(req);
+        if (!data || typeof data !== "object" || Array.isArray(data))
+          return json(res, 400, { error: "Expected a settings object." }), true;
+        const updated = store.setPrefs(user.id, data);
+        return json(res, 200, { ok: true, updated }), true;
+      }
+    }
+
     /* ---------- progress ---------- */
     const prog = path.match(/^\/progress\/([a-z]+)$/);
     if (prog){

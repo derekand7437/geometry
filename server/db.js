@@ -30,6 +30,11 @@ db.exec(`
     updated TEXT NOT NULL,
     PRIMARY KEY (user_id, subject)
   );
+  CREATE TABLE IF NOT EXISTS prefs (
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    data    TEXT NOT NULL,
+    updated TEXT NOT NULL
+  );
   CREATE TABLE IF NOT EXISTS attempts (
     id      INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -48,6 +53,9 @@ const q = {
   addSession:  db.prepare("INSERT INTO sessions (token, user_id, created) VALUES (?, ?, ?)"),
   session:     db.prepare("SELECT user_id FROM sessions WHERE token = ?"),
   dropSession: db.prepare("DELETE FROM sessions WHERE token = ?"),
+  getPrefs:    db.prepare("SELECT data, updated FROM prefs WHERE user_id = ?"),
+  setPrefs:    db.prepare(`INSERT INTO prefs (user_id, data, updated) VALUES (?, ?, ?)
+                           ON CONFLICT(user_id) DO UPDATE SET data = excluded.data, updated = excluded.updated`),
   getProgress: db.prepare("SELECT data, updated FROM progress WHERE user_id = ? AND subject = ?"),
   setProgress: db.prepare(`INSERT INTO progress (user_id, subject, data, updated) VALUES (?, ?, ?, ?)
                            ON CONFLICT(user_id, subject) DO UPDATE SET data = excluded.data, updated = excluded.updated`),
@@ -73,6 +81,13 @@ export const store = {
     return row ? q.userById.get(row.user_id) : null;
   },
   dropSession: token => q.dropSession.run(token),
+
+  getPrefs(userId){ return q.getPrefs.get(userId) || null; },
+  setPrefs(userId, data){
+    const now = new Date().toISOString();
+    q.setPrefs.run(userId, JSON.stringify(data), now);
+    return now;
+  },
 
   getProgress(userId, subject){ return q.getProgress.get(userId, subject) || null; },
   setProgress(userId, subject, data){

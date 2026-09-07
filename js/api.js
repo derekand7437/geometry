@@ -52,6 +52,9 @@ export const api = {
   logout(){ const p = this.call("/logout", { method: "POST" }); this.clear(); return p; },
   me(){ return this.call("/me"); },
 
+  getPrefs(){ return this.call("/prefs"); },
+  putPrefs(data){ return this.call("/prefs", { method: "PUT", body: { data } }); },
+
   getProgress(subject){ return this.call("/progress/" + subject); },
   putProgress(subject, data){ return this.call("/progress/" + subject, { method: "PUT", body: { data } }); },
   postAttempts(rows){ return this.call("/attempts", { method: "POST", body: { attempts: rows } }); },

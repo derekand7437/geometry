@@ -11,6 +11,16 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap">
   <link rel="stylesheet" href="css/geo.css">
   <link rel="stylesheet" href="css/base.css">
+  <script>
+    /* Paint saved appearance settings before the first frame, so there is no flash of the
+       default theme. prefs.js recomputes this map whenever the settings change. */
+    try {
+      var p = JSON.parse(localStorage.getItem("studyapp.prefs") || "{}");
+      var s = document.documentElement.style;
+      if (p.css) for (var k in p.css) s.setProperty(k, p.css[k]);
+      if (p.size && p.size !== 100) s.setProperty("zoom", String(p.size / 100));
+    } catch (e) {}
+  </script>
 </head>
 <body>
 <div class="topbar">
