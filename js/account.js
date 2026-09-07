@@ -3,11 +3,18 @@ import { api } from "./api.js";
 import { store } from "./store.js";
 
 let openDialog = null;
+let pendingOpen = null;
 const authListeners = [];
 
-/** Open the auth dialog from elsewhere (the home screen), in "login" or "register" mode.
- *  No-op when there is no backend to sign into. */
-export function openSignIn(mode){ if (openDialog) openDialog(mode); }
+/**
+ * Open the auth dialog from elsewhere (the home screen), in "login" or "register" mode.
+ * The dialog is only built once the backend check resolves, so a tap that lands before
+ * then is remembered and honoured the moment it is ready rather than being dropped.
+ */
+export function openSignIn(mode){
+  if (openDialog) openDialog(mode);
+  else pendingOpen = mode || "login";
+}
 
 /** Notified whenever the signed-in user changes, so other screens can repaint. */
 export function onAuthChange(fn){ authListeners.push(fn); }
@@ -22,6 +29,8 @@ export async function mountAccount(){
 
   if (!(await api.detect())){
     host.innerHTML = `<span class="who offline">Progress saves in this browser</span>`;
+    pendingOpen = null;
+    authListeners.forEach(fn => fn(null));   // no account here — let the home screen move on
     return;
   }
 
@@ -72,6 +81,7 @@ export async function mountAccount(){
     dialog.showModal();
     $("#auth-user", dialog).focus();
   };
+  if (pendingOpen){ const m = pendingOpen; pendingOpen = null; openDialog(m); }
 
   dialog.addEventListener("close", () => { if (dialog.returnValue !== "go") return; });
 
