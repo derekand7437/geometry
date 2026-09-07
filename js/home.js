@@ -34,8 +34,7 @@ export function mountHome(app, ui, study){
     // A backend-less deploy has no account to sign into, so never show a gate
     // nobody can pass — go straight to the day.
     if (api.available !== false && !api.signedIn && !skipped) return welcomeView();
-    // Signing up goes straight to the course; coming back to an account does not.
-    if (api.signedIn && api.how === "login" && !paid) return payView();
+    if (api.signedIn && !paid) return payView();
     return dayView();
   }
 

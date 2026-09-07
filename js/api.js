@@ -7,7 +7,6 @@ import { API_BASE } from "./config.js";
 
 const TOKEN_KEY = "studyapp.token";
 const USER_KEY  = "studyapp.user";
-const HOW_KEY   = "studyapp.how";      // "login" or "register" — how this session started
 
 function read(key){ try { return localStorage.getItem(key); } catch { return null; } }
 function write(key, val){
@@ -18,8 +17,6 @@ export const api = {
   get token(){ return read(TOKEN_KEY); },
   get user(){ const u = read(USER_KEY); return u ? JSON.parse(u) : null; },
   get signedIn(){ return !!this.token; },
-  /** "login" when they came back to an account, "register" when they just made one. */
-  get how(){ return read(HOW_KEY); },
 
   /** Served as static files (GitHub Pages), there is no API. Ask once, then adapt the UI. */
   available: null,
@@ -49,12 +46,8 @@ export const api = {
     }
   },
 
-  remember(token, user, how){
-    write(TOKEN_KEY, token);
-    write(USER_KEY, JSON.stringify(user));
-    write(HOW_KEY, how || null);
-  },
-  clear(){ write(TOKEN_KEY, null); write(USER_KEY, null); write(HOW_KEY, null); },
+  remember(token, user){ write(TOKEN_KEY, token); write(USER_KEY, JSON.stringify(user)); },
+  clear(){ write(TOKEN_KEY, null); write(USER_KEY, null); },
 
   register(username, password, phone){ return this.call("/register", { method: "POST", body: { username, password, phone } }); },
   /** Step two, for either flow: pass { pending, code } or { challenge, code }. */
