@@ -2,6 +2,24 @@ import { $ } from "./util.js";
 import { api } from "./api.js";
 import { store } from "./store.js";
 
+const EYE = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const EYE_OFF = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.24 4.24"/><path d="M9.5 5.2A9.9 9.9 0 0 1 12 5c6.4 0 10 7 10 7a17.7 17.7 0 0 1-3.5 4.4M6.3 6.8A17.6 17.6 0 0 0 2 12s3.6 7 10 7a9.7 9.7 0 0 0 3.7-.7"/></svg>`;
+
+/** Wire a show/hide toggle onto a password box. Returns a reset so it never reopens visible. */
+function wireEye(input, button){
+  const set = show => {
+    input.type = show ? "text" : "password";
+    button.innerHTML = show ? EYE_OFF : EYE;
+    button.setAttribute("aria-label", show ? "Hide password" : "Show password");
+    button.setAttribute("aria-pressed", show ? "true" : "false");
+  };
+  button.addEventListener("click", () => set(input.type === "password"));
+  set(false);
+  return () => set(false);
+}
+
 let openDialog = null;
 let pendingOpen = null;
 let doSignOut = null;
@@ -52,9 +70,17 @@ export async function mountAccount(){
 
       <div id="auth-step-creds">
         <label>Username<input id="auth-user" name="username" autocomplete="username" required minlength="3" maxlength="24" spellcheck="false"></label>
-        <label>Password<input id="auth-pass" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="200"></label>
+        <label>Password
+          <span class="pw-wrap">
+            <input id="auth-pass" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="200">
+            <button type="button" class="pw-eye" id="auth-pass-eye"></button>
+          </span>
+        </label>
         <label id="auth-confirm-row" hidden>Type your password again
-          <input id="auth-confirm" name="confirm-password" type="password" autocomplete="new-password" maxlength="200">
+          <span class="pw-wrap">
+            <input id="auth-confirm" name="confirm-password" type="password" autocomplete="new-password" maxlength="200">
+            <button type="button" class="pw-eye" id="auth-confirm-eye"></button>
+          </span>
         </label>
         <label id="auth-phone-row" hidden>Phone number
           <input id="auth-phone" name="tel" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="(555) 123-4567">
@@ -95,6 +121,10 @@ export async function mountAccount(){
   const elPhone   = $("#auth-phone", dialog);
   const elCode    = $("#auth-code", dialog);
   const go        = $("#auth-go", dialog);
+
+  const resetPassEye    = wireEye(elPass, $("#auth-pass-eye", dialog));
+  const resetConfirmEye = wireEye(elConfirm, $("#auth-confirm-eye", dialog));
+  const hidePasswords = () => { resetPassEye(); resetConfirmEye(); };
 
   const fail = msg => { err.hidden = false; err.textContent = msg; };
 
@@ -140,6 +170,7 @@ export async function mountAccount(){
     // The prompt has to change with the mode — "New here? I already have one" reads backwards.
     $("#auth-swap-text", dialog).textContent = login ? "New here?" : "Already have an account?";
     $("#auth-toggle", dialog).textContent = login ? "Create an account" : "Log in";
+    hidePasswords();
     showStep("creds");
   }
 
@@ -233,6 +264,7 @@ export async function mountAccount(){
   openDialog = m => {
     setMode(m === "register" ? "register" : "login");
     elUser.value = ""; elPass.value = ""; elConfirm.value = ""; elPhone.value = "";
+    hidePasswords();
     dialog.showModal();
     elUser.focus();
   };
