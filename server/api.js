@@ -59,7 +59,12 @@ export async function handleApi(req, res, url){
       if (bad) return json(res, 400, { error: bad }), true;
 
       const e164 = normalizePhone(phone);
-      if (!e164) return json(res, 400, { error: "Enter a phone number that can receive texts." }), true;
+      if (!e164){
+        // A cached older copy of the page has no phone box, so asking for one is a dead end.
+        return json(res, 400, { error: phone === undefined
+          ? "This page is out of date. Reload it and try again \u2014 pull down to refresh on a phone, or Ctrl+Shift+R (\u2318\u21e7R on a Mac)."
+          : "Enter a phone number that can receive texts." }), true;
+      }
       if (store.userByName(username)) return json(res, 409, { error: "That username is taken." }), true;
 
       const pass = hashPassword(password);
